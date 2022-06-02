@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ChangeHandler, FieldValues, SubmitHandler, useForm } from 'react-hook-form';
+import styled from 'styled-components';
 import PlanResult from './PlanResult';
 
 interface Form {
@@ -13,79 +14,114 @@ interface Form {
   advancedSecurity: boolean;
 }
 
-interface Plan extends Form {
+export interface Plan extends Form {
   name?: string;
   billedMonthlyPerMonthPerSeatPrice?: number;
   billedAnnualyPerMonthPerSeatPrice?: number;
 }
 
+const plans: Plan[] = [
+  {
+    name: 'Starter',
+    billedMonthlyPerMonthPerSeatPrice: 0,
+    billedAnnualyPerMonthPerSeatPrice: 0,
+    seats: 1,
+    unhostedSites: 2,
+    customCode: false,
+    codeExport: false,
+    billingPermissions: false,
+    publishingPermissions: false,
+    advancedPermissions: false,
+    advancedSecurity: false,
+  },
+
+  {
+    name: 'Core',
+    billedMonthlyPerMonthPerSeatPrice: 28,
+    billedAnnualyPerMonthPerSeatPrice: 19,
+    seats: 3,
+    unhostedSites: 10,
+    customCode: true,
+    codeExport: true,
+    billingPermissions: true,
+    publishingPermissions: false,
+    advancedPermissions: false,
+    advancedSecurity: false,
+  },
+
+  {
+    name: 'Growth',
+    billedMonthlyPerMonthPerSeatPrice: 60,
+    billedAnnualyPerMonthPerSeatPrice: 49,
+    seats: 9,
+    unhostedSites: Infinity,
+    customCode: true,
+    codeExport: true,
+    billingPermissions: true,
+    publishingPermissions: true,
+    advancedPermissions: false,
+    advancedSecurity: false,
+  },
+
+  {
+    name: 'Enterprise',
+    billedMonthlyPerMonthPerSeatPrice: Infinity,
+    billedAnnualyPerMonthPerSeatPrice: Infinity,
+    seats: Infinity,
+    unhostedSites: Infinity,
+    customCode: true,
+    codeExport: true,
+    billingPermissions: true,
+    publishingPermissions: true,
+    advancedPermissions: true,
+    advancedSecurity: true,
+  },
+];
+
+const Root = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  padding: 40px;
+
+  form {
+    width: 300px;
+    text-align: start;
+    padding: 30px 40px 30px;
+    border: 1px solid;
+    border-radius: 10px;
+
+    button {
+      padding: 10px;
+    }
+  }
+
+  label {
+    display: block;
+  }
+
+  input {
+    display: block;
+    margin-top: 3px;
+    margin-bottom: 3px;
+    height: 30px;
+  }
+
+  input[type='number'] {
+    max-width: 300px;
+    width: 250px;
+    padding-left: 30px;
+  }
+`;
+
 function WorkspacePlan() {
-  const plans: Plan[] = [
-    {
-      name: 'starter',
-      billedMonthlyPerMonthPerSeatPrice: 0,
-      billedAnnualyPerMonthPerSeatPrice: 0,
-      seats: 1,
-      unhostedSites: 2,
-      customCode: false,
-      codeExport: false,
-      billingPermissions: false,
-      publishingPermissions: false,
-      advancedPermissions: false,
-      advancedSecurity: false,
-    },
-
-    {
-      name: 'core',
-      billedMonthlyPerMonthPerSeatPrice: 28,
-      billedAnnualyPerMonthPerSeatPrice: 19,
-      seats: 3,
-      unhostedSites: 10,
-      customCode: true,
-      codeExport: true,
-      billingPermissions: true,
-      publishingPermissions: false,
-      advancedPermissions: false,
-      advancedSecurity: false,
-    },
-
-    {
-      name: 'growth',
-      billedMonthlyPerMonthPerSeatPrice: 60,
-      billedAnnualyPerMonthPerSeatPrice: 49,
-      seats: 9,
-      unhostedSites: Infinity,
-      customCode: true,
-      codeExport: true,
-      billingPermissions: true,
-      publishingPermissions: true,
-      advancedPermissions: false,
-      advancedSecurity: false,
-    },
-
-    {
-      name: 'enterprise',
-      billedMonthlyPerMonthPerSeatPrice: Infinity,
-      billedAnnualyPerMonthPerSeatPrice: Infinity,
-      seats: Infinity,
-      unhostedSites: Infinity,
-      customCode: true,
-      codeExport: true,
-      billingPermissions: true,
-      publishingPermissions: true,
-      advancedPermissions: true,
-      advancedSecurity: true,
-    },
-  ];
-
   const [plan, setPlan] = useState<Plan>(plans[0]);
+  const [seats, setSeats] = useState<number>(1);
   const {
     register,
     handleSubmit,
     formState: { errors },
-    getValues,
-    setValue,
     watch,
+    setValue,
   } = useForm<Form>({
     defaultValues: {
       seats: 1,
@@ -105,7 +141,9 @@ function WorkspacePlan() {
 
   const formData = watch();
   useEffect(() => {
-    console.log(formData);
+    if (formData.seats < 1) setValue('seats', 1);
+    if (formData.unhostedSites < 2) setValue('unhostedSites', 2);
+    setSeats(formData.seats);
     const newPlan = findPlan(plans, formData);
     if (newPlan.name !== plan.name) {
       setPlan(newPlan);
@@ -124,87 +162,63 @@ function WorkspacePlan() {
     let resPlan = plans[0];
 
     for (let i = 0; i < plans.length; i++) {
-      //console.log(plans[i], data);
       resPlan = plans[i];
 
       let matches = true;
-      //console.log(plans[i].name);
       for (const [k, v] of Object.entries(plans[i])) {
         if (k === 'name' || k === 'billedMonthlyPerMonthPerSeatPrice' || k === 'billedAnnualyPerMonthPerSeatPrice')
           continue;
         matches = v >= data[k];
-        //console.log(k, v, data[k], matches);
         if (!matches) break;
       }
-      //console.log('\n\n');
-
       if (matches) break;
     }
 
     return resPlan;
   }
 
-  // const onChange = () => {
-  //   setValue('seats', 2);
-  //   console.log(getValues());
-  //   const data = getValues();
-  //   setPlan(findPlan(plans, data));
-  // };
-
-  //console.log(errors);
   return (
-    <>
+    <Root>
       <form onSubmit={handleSubmit(onSubmit)}>
+        <h2>Add Workspace Plan</h2>
         <label>
           Seats
-          <input
-            type="number"
-            placeholder="Seats"
-            defaultValue="1"
-            {...register('seats', { required: true, min: 1 })}
-          />
+          <input type="number" placeholder="Seats" defaultValue="1" {...register('seats')} />
         </label>
 
         <label>
           Unhosted Sites
-          <input
-            type="number"
-            placeholder="Unhosted Sites"
-            defaultValue="2"
-            {...register('unhostedSites', { required: true, min: 2 })}
-          />
+          <input type="number" placeholder="Unhosted Sites" defaultValue="2" {...register('unhostedSites')} />
         </label>
         <label>
-          <input type="checkbox" placeholder="Custom Code" {...register('customCode', {})} />
           Custom Code
+          <input type="checkbox" placeholder="Custom Code" {...register('customCode', {})} />
         </label>
         <label>
-          <input type="checkbox" placeholder="Code Export" {...register('codeExport', {})} />
           Code Export
+          <input type="checkbox" placeholder="Code Export" {...register('codeExport', {})} />
         </label>
         <label>
-          <input type="checkbox" placeholder="Billing Permissions" {...register('billingPermissions', {})} />
           Billing Permissions
+          <input type="checkbox" placeholder="Billing Permissions" {...register('billingPermissions', {})} />
         </label>
         <label>
-          <input type="checkbox" placeholder="Publishing Permissions" {...register('publishingPermissions', {})} />
           Publishing Permissions
+          <input type="checkbox" placeholder="Publishing Permissions" {...register('publishingPermissions', {})} />
         </label>
         <label>
-          <input type="checkbox" placeholder="Advanced Permissions" {...register('advancedPermissions', {})} />
           Advanced Permissions
+          <input type="checkbox" placeholder="Advanced Permissions" {...register('advancedPermissions', {})} />
         </label>
         <label>
-          <input type="checkbox" placeholder="Advanced Security" {...register('advancedSecurity', {})} />
           Advanced Security
+          <input type="checkbox" placeholder="Advanced Security" {...register('advancedSecurity', {})} />
         </label>
-        <button type="submit">Add Workspace Plan</button>
+        {/* <button type="submit">Add Workspace Plan</button> */}
       </form>
 
-      <PlanResult>
-        <span>{plan ? plan.name : ''}</span>
-      </PlanResult>
-    </>
+      <PlanResult plan={plan} seats={seats}></PlanResult>
+    </Root>
   );
 }
 
