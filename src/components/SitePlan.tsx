@@ -1,18 +1,15 @@
 import { useEffect, useState } from 'react';
-import { ChangeHandler, FieldValues, SubmitHandler, useForm } from 'react-hook-form';
+import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
 import styled from 'styled-components';
-import PlanResult from './PlanResult';
+
 import SitePlanResult from './SitePlanResult';
 
 export interface SForm {
   customDomain: boolean;
   cmsItems: number;
-  ecommerceItems: number;
   bandwidth: number;
   guestEditors: number;
   uptimeSla: boolean;
-  transactionFee: number;
-  annualSalesVolume: number;
 }
 
 export interface SPlan extends SForm {
@@ -28,12 +25,9 @@ const plans: SPlan[] = [
     billedAnnualyPerMonthPerSeatPrice: 0,
     customDomain: false,
     cmsItems: 50,
-    ecommerceItems: 0,
     bandwidth: 1,
     guestEditors: 0,
     uptimeSla: false,
-    transactionFee: 0,
-    annualSalesVolume: 0,
   },
 
   {
@@ -42,12 +36,9 @@ const plans: SPlan[] = [
     billedAnnualyPerMonthPerSeatPrice: 12,
     customDomain: true,
     cmsItems: 0,
-    ecommerceItems: 0,
     bandwidth: 50,
     guestEditors: 0,
     uptimeSla: false,
-    transactionFee: 0,
-    annualSalesVolume: 0,
   },
 
   {
@@ -56,12 +47,9 @@ const plans: SPlan[] = [
     billedAnnualyPerMonthPerSeatPrice: 16,
     customDomain: true,
     cmsItems: 2000,
-    ecommerceItems: 0,
     bandwidth: 200,
     guestEditors: 3,
     uptimeSla: false,
-    transactionFee: 0,
-    annualSalesVolume: 0,
   },
 
   {
@@ -70,12 +58,9 @@ const plans: SPlan[] = [
     billedAnnualyPerMonthPerSeatPrice: 36,
     customDomain: true,
     cmsItems: 10000,
-    ecommerceItems: 0,
     bandwidth: 400,
     guestEditors: 10,
     uptimeSla: false,
-    transactionFee: 0,
-    annualSalesVolume: 0,
   },
   {
     name: 'Enterprise',
@@ -83,51 +68,9 @@ const plans: SPlan[] = [
     billedAnnualyPerMonthPerSeatPrice: Infinity,
     customDomain: true,
     cmsItems: 10000,
-    ecommerceItems: 0,
     bandwidth: Infinity,
     guestEditors: Infinity,
     uptimeSla: true,
-    transactionFee: 0,
-    annualSalesVolume: 0,
-  },
-  {
-    name: 'Standard',
-    billedMonthlyPerMonthPerSeatPrice: 42,
-    billedAnnualyPerMonthPerSeatPrice: 29,
-    customDomain: true,
-    cmsItems: 2000,
-    ecommerceItems: 500,
-    bandwidth: 200,
-    guestEditors: 3,
-    uptimeSla: false,
-    transactionFee: 2,
-    annualSalesVolume: 50000,
-  },
-  {
-    name: 'Plus',
-    billedMonthlyPerMonthPerSeatPrice: 84,
-    billedAnnualyPerMonthPerSeatPrice: 74,
-    customDomain: true,
-    cmsItems: 10000,
-    ecommerceItems: 1000,
-    bandwidth: 400,
-    guestEditors: 10,
-    uptimeSla: false,
-    transactionFee: 0,
-    annualSalesVolume: 200000,
-  },
-  {
-    name: 'Advanced',
-    billedMonthlyPerMonthPerSeatPrice: 235,
-    billedAnnualyPerMonthPerSeatPrice: 212,
-    customDomain: true,
-    cmsItems: 10000,
-    ecommerceItems: 3000,
-    bandwidth: 400,
-    guestEditors: 10,
-    uptimeSla: false,
-    transactionFee: 0,
-    annualSalesVolume: Infinity,
   },
 ];
 
@@ -165,11 +108,30 @@ const Root = styled.div`
     max-width: 300px;
     width: 250px;
     padding-left: 30px;
+    display: ;
   }
+`;
+
+const SelectedPlans = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  h2 {
+    min-width: 100%;
+    margin: 0px 40px;
+  }
+  border: 1px solid;
 `;
 
 function SitePlan() {
   const [plan, setPlan] = useState<SPlan>(plans[0]);
+  const [addedPlans, setAddedPlans] = useState<{ [k: string]: number }>({
+    starterPlan: 0,
+    basicPlan: 0,
+    cmsPlan: 0,
+    businessPlan: 0,
+    enterprisePlan: 0,
+  });
+
   const {
     register,
     handleSubmit,
@@ -180,17 +142,32 @@ function SitePlan() {
     defaultValues: {
       customDomain: false,
       cmsItems: 0,
-      ecommerceItems: 0,
       bandwidth: 1,
       guestEditors: 0,
       uptimeSla: false,
-      transactionFee: 0,
-      annualSalesVolume: 0,
     },
   });
 
-  const onSubmit: SubmitHandler<FieldValues> = (data) => {
-    //setPlan(findPlan(plans, data));
+  const onSubmit: SubmitHandler<FieldValues> = () => {
+    switch (plan.name) {
+      case 'Starter':
+        setAddedPlans({ ...addedPlans, starterPlan: addedPlans.starterPlan + 1 });
+        break;
+      case 'Basic':
+        setAddedPlans({ ...addedPlans, basicPlan: addedPlans.basicPlan + 1 });
+        break;
+      case 'CMS':
+        setAddedPlans({ ...addedPlans, cmsPlan: addedPlans.cmsPlan + 1 });
+        break;
+      case 'Business':
+        setAddedPlans({ ...addedPlans, businessPlan: addedPlans.businessPlan + 1 });
+        break;
+      case 'Enterprise':
+        setAddedPlans({ ...addedPlans, enterprisePlan: addedPlans.enterprisePlan + 1 });
+        break;
+      default:
+        break;
+    }
   };
 
   const formData = watch();
@@ -198,16 +175,9 @@ function SitePlan() {
     if (formData.cmsItems > 10000) setValue('cmsItems', 10000);
     if (formData.cmsItems < 0) setValue('cmsItems', 0);
 
-    if (formData.ecommerceItems > 3000) setValue('ecommerceItems', 3000);
-    if (formData.ecommerceItems < 0) setValue('ecommerceItems', 0);
-
-    if (formData.bandwidth < 1) setValue('bandwidth', 1);
-
-    if (formData.annualSalesVolume < 0) setValue('annualSalesVolume', 0);
+    if (formData.bandwidth < 0) setValue('bandwidth', 1);
 
     if (formData.guestEditors < 0) setValue('guestEditors', 0);
-
-    if (formData.annualSalesVolume > 50000) setValue('transactionFee', 0);
 
     const newPlan = findPlan(plans, formData);
     if (newPlan.name !== plan.name) {
@@ -223,7 +193,6 @@ function SitePlan() {
      **/
     if (data.bandwidth > 400) data.bandwidth = Infinity;
     if (data.guestEditors > 10) data.guestEditors = Infinity;
-    if (data.annualSalesVolume > 200000) data.annualSalesVolume = Infinity;
 
     let resPlan = plans[0];
 
@@ -261,10 +230,7 @@ function SitePlan() {
           CMS Items
           <input type="number" placeholder="CMS Items" defaultValue="2" {...register('cmsItems')} />
         </label>
-        <label>
-          Ecommerce Items
-          <input type="number" placeholder="Ecommerce Items" {...register('ecommerceItems', {})} />
-        </label>
+
         <label>
           Bandwidth (GB)
           <input type="number" placeholder="Bandwidth" {...register('bandwidth', {})} />
@@ -277,21 +243,22 @@ function SitePlan() {
           Uptime SLA
           <input type="checkbox" placeholder="Uptime SLA" {...register('uptimeSla', {})} />
         </label>
-        <label>
-          Transaction Fee (%)
-          <select {...register('transactionFee')}>
-            <option value="0">0</option>
-            <option value="2">2</option>
-          </select>
-        </label>
-        <label>
-          Annual Sales Volume ($)
-          <input type="number" placeholder="Annual Sales Volume" {...register('annualSalesVolume', {})} />
-        </label>
-        {/* <button type="submit">Add Workspace Plan</button> */}
+        <button type="submit">Add Site Plan</button>
       </form>
 
-      <SitePlanResult seats={1} plan={plan} data={formData}></SitePlanResult>
+      <SitePlanResult sites={1} plan={plan}></SitePlanResult>
+      <SelectedPlans>
+        <h2>Added Site Plans</h2>
+        {addedPlans.starterPlan > 0 && <SitePlanResult sites={addedPlans.starterPlan} plan={plans[0]}></SitePlanResult>}
+        {addedPlans.basicPlan > 0 && <SitePlanResult sites={addedPlans.basicPlan} plan={plans[1]}></SitePlanResult>}
+        {addedPlans.cmsPlan > 0 && <SitePlanResult sites={addedPlans.cmsPlan} plan={plans[2]}></SitePlanResult>}
+        {addedPlans.businessPlan > 0 && (
+          <SitePlanResult sites={addedPlans.businessPlan} plan={plans[3]}></SitePlanResult>
+        )}
+        {addedPlans.enterprisePlan > 0 && (
+          <SitePlanResult sites={addedPlans.enterprisePlan} plan={plans[4]}></SitePlanResult>
+        )}
+      </SelectedPlans>
     </Root>
   );
 }

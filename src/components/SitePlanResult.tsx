@@ -1,4 +1,4 @@
-import { ReactElement } from 'react';
+import React, { ReactElement, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { v4 as uuid } from 'uuid';
 import { SForm, SPlan } from './SitePlan';
@@ -6,16 +6,18 @@ import { SForm, SPlan } from './SitePlan';
 interface SitePlanResult {
   children?: ReactElement;
   plan?: SPlan;
-  seats: number;
-  data: SForm;
+  sites: number;
+  animate?: boolean;
 }
-
-const Root = styled.div`
+interface RootProps {
+  animate?: boolean;
+}
+const Root = styled.div<RootProps>`
   padding: 40px;
 
   span {
     border: 1px solid #f44336b8;
-    animation: animate-background linear 0.1s;
+    animation: animate-background linear ${({ animate }) => (animate ? 0.1 : 0)}s;
 
     @keyframes animate-background {
       from {
@@ -28,33 +30,34 @@ const Root = styled.div`
   }
 `;
 
-const SitePlanResult: React.FC<SitePlanResult> = ({ plan, seats, data }) => {
+const SitePlanResult: React.FC<SitePlanResult> = ({ plan, sites }) => {
   const key = uuid();
   const billAnnual = plan?.billedAnnualyPerMonthPerSeatPrice ?? 0;
   const billMonthly = plan?.billedMonthlyPerMonthPerSeatPrice ?? 0;
+
   return (
-    <Root key={key}>
+    <Root key={key} animate={true}>
       <p>
-        Plan Name: <span>{plan?.name} Site Plan</span>
+        Plan Name:{' '}
+        <span>
+          {plan?.name} Site Plan x {sites}
+        </span>
       </p>
-      {data.annualSalesVolume > 0 && data.transactionFee > 0 && (
-        <p>Transaction Fee Cut: ${data.annualSalesVolume * (data.transactionFee * 0.01)}</p>
-      )}
       ---
       <p>
         Total Annual Cost Billed Annually: $
-        {billAnnual * 12 * seats === Infinity ? 'Custom Pricing' : billAnnual * 12 * seats}
+        {billAnnual * 12 * sites === Infinity ? 'Custom Pricing' : billAnnual * 12 * sites}
       </p>
       <p>
         Total Annual Cost Billed Monthly: $
-        {billMonthly * 12 * seats === Infinity ? 'Custom Pricing' : billMonthly * 12 * seats}
+        {billMonthly * 12 * sites === Infinity ? 'Custom Pricing' : billMonthly * 12 * sites}
       </p>
       ---
       <p>
-        Total Monthly Cost Billed Annually: ${billAnnual * seats === Infinity ? 'Custom Pricing' : billAnnual * seats}
+        Total Monthly Cost Billed Annually: ${billAnnual * sites === Infinity ? 'Custom Pricing' : billAnnual * sites}
       </p>
       <p>
-        Total Monthly Cost Billed Monthly: ${billMonthly * seats === Infinity ? 'Custom Pricing' : billMonthly * seats}
+        Total Monthly Cost Billed Monthly: ${billMonthly * sites === Infinity ? 'Custom Pricing' : billMonthly * sites}
       </p>
     </Root>
   );
