@@ -78,6 +78,7 @@ const Root = styled.div`
   display: flex;
   flex-wrap: wrap;
   padding: 40px;
+  height: 540px;
 
   form {
     width: 300px;
@@ -120,18 +121,13 @@ const SelectedPlans = styled.div`
     margin: 0px 40px;
   }
   border: 1px solid;
+  min-height: 370px;
 `;
 
 function SitePlan() {
   const [plan, setPlan] = useState<SPlan>(plans[0]);
-  const [addedPlans, setAddedPlans] = useState<{ [k: string]: number }>({
-    starterPlan: 0,
-    basicPlan: 0,
-    cmsPlan: 0,
-    businessPlan: 0,
-    enterprisePlan: 0,
-  });
-
+  const [addedPlans, setAddedPlans] = useState<SPlan[]>([]);
+  const [addedWarning, setAddedWarning] = useState<boolean>(false);
   const {
     register,
     handleSubmit,
@@ -149,29 +145,16 @@ function SitePlan() {
   });
 
   const onSubmit: SubmitHandler<FieldValues> = () => {
-    switch (plan.name) {
-      case 'Starter':
-        setAddedPlans({ ...addedPlans, starterPlan: addedPlans.starterPlan + 1 });
-        break;
-      case 'Basic':
-        setAddedPlans({ ...addedPlans, basicPlan: addedPlans.basicPlan + 1 });
-        break;
-      case 'CMS':
-        setAddedPlans({ ...addedPlans, cmsPlan: addedPlans.cmsPlan + 1 });
-        break;
-      case 'Business':
-        setAddedPlans({ ...addedPlans, businessPlan: addedPlans.businessPlan + 1 });
-        break;
-      case 'Enterprise':
-        setAddedPlans({ ...addedPlans, enterprisePlan: addedPlans.enterprisePlan + 1 });
-        break;
-      default:
-        break;
+    if (!addedPlans.find((addedPlan) => plan.name === addedPlan.name)) {
+      setAddedPlans([...addedPlans, plan]);
+    } else {
+      setAddedWarning(true);
     }
   };
 
   const formData = watch();
   useEffect(() => {
+    console.log('here');
     if (formData.cmsItems > 10000) setValue('cmsItems', 10000);
     if (formData.cmsItems < 0) setValue('cmsItems', 0);
 
@@ -218,48 +201,45 @@ function SitePlan() {
   }
 
   return (
-    <Root>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <h2>Add Site Plan</h2>
-        <label>
-          Custom Domain
-          <input type="checkbox" placeholder="Custom Domain" defaultValue="1" {...register('customDomain')} />
-        </label>
+    <>
+      <Root>
+        <form onSubmit={handleSubmit(onSubmit)} onClick={() => setAddedWarning(false)}>
+          <h2>Add Site Plan</h2>
+          <label>
+            Custom Domain
+            <input type="checkbox" placeholder="Custom Domain" defaultValue="1" {...register('customDomain')} />
+          </label>
 
-        <label>
-          CMS Items
-          <input type="number" placeholder="CMS Items" defaultValue="2" {...register('cmsItems')} />
-        </label>
+          <label>
+            CMS Items
+            <input type="number" placeholder="CMS Items" defaultValue="2" {...register('cmsItems')} />
+          </label>
 
-        <label>
-          Bandwidth (GB)
-          <input type="number" placeholder="Bandwidth" {...register('bandwidth', {})} />
-        </label>
-        <label>
-          Guest Editors
-          <input type="number" placeholder="Guest Editors" {...register('guestEditors', {})} />
-        </label>
-        <label>
-          Uptime SLA
-          <input type="checkbox" placeholder="Uptime SLA" {...register('uptimeSla', {})} />
-        </label>
-        <button type="submit">Add Site Plan</button>
-      </form>
+          <label>
+            Bandwidth (GB)
+            <input type="number" placeholder="Bandwidth" {...register('bandwidth', {})} />
+          </label>
+          <label>
+            Guest Editors
+            <input type="number" placeholder="Guest Editors" {...register('guestEditors', {})} />
+          </label>
+          <label>
+            Uptime SLA
+            <input type="checkbox" placeholder="Uptime SLA" {...register('uptimeSla', {})} />
+          </label>
+          <button type="submit">Add Site Plan</button>
+          {addedWarning && <h3>You already added one {plan.name} site plan</h3>}
+        </form>
 
-      <SitePlanResult sites={1} plan={plan}></SitePlanResult>
+        <SitePlanResult plan={plan} animate showCount={false}></SitePlanResult>
+      </Root>
       <SelectedPlans>
         <h2>Added Site Plans</h2>
-        {addedPlans.starterPlan > 0 && <SitePlanResult sites={addedPlans.starterPlan} plan={plans[0]}></SitePlanResult>}
-        {addedPlans.basicPlan > 0 && <SitePlanResult sites={addedPlans.basicPlan} plan={plans[1]}></SitePlanResult>}
-        {addedPlans.cmsPlan > 0 && <SitePlanResult sites={addedPlans.cmsPlan} plan={plans[2]}></SitePlanResult>}
-        {addedPlans.businessPlan > 0 && (
-          <SitePlanResult sites={addedPlans.businessPlan} plan={plans[3]}></SitePlanResult>
-        )}
-        {addedPlans.enterprisePlan > 0 && (
-          <SitePlanResult sites={addedPlans.enterprisePlan} plan={plans[4]}></SitePlanResult>
-        )}
+        {addedPlans.map((plan) => (
+          <SitePlanResult key={plan.name} plan={plan} controls></SitePlanResult>
+        ))}
       </SelectedPlans>
-    </Root>
+    </>
   );
 }
 

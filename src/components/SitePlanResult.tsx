@@ -6,8 +6,9 @@ import { SForm, SPlan } from './SitePlan';
 interface SitePlanResult {
   children?: ReactElement;
   plan?: SPlan;
-  sites: number;
   animate?: boolean;
+  controls?: boolean;
+  showCount?: boolean;
 }
 interface RootProps {
   animate?: boolean;
@@ -30,17 +31,17 @@ const Root = styled.div<RootProps>`
   }
 `;
 
-const SitePlanResult: React.FC<SitePlanResult> = ({ plan, sites }) => {
+const SitePlanResult: React.FC<SitePlanResult> = ({ plan, animate, controls, showCount = true }) => {
   const key = uuid();
   const billAnnual = plan?.billedAnnualyPerMonthPerSeatPrice ?? 0;
   const billMonthly = plan?.billedMonthlyPerMonthPerSeatPrice ?? 0;
-
+  const [sites, setSites] = useState<number>(1);
   return (
-    <Root key={key} animate={true}>
+    <Root key={key} animate={animate}>
       <p>
         Plan Name:{' '}
         <span>
-          {plan?.name} Site Plan x {sites}
+          {plan?.name} Site Plan {showCount ? `x ${sites}` : ''}
         </span>
       </p>
       ---
@@ -59,6 +60,12 @@ const SitePlanResult: React.FC<SitePlanResult> = ({ plan, sites }) => {
       <p>
         Total Monthly Cost Billed Monthly: ${billMonthly * sites === Infinity ? 'Custom Pricing' : billMonthly * sites}
       </p>
+      {controls && (
+        <>
+          <button onClick={() => setSites(sites + 1)}>Increment</button>
+          <button onClick={() => (sites >= 1 ? setSites(sites - 1) : null)}>decrement</button>
+        </>
+      )}
     </Root>
   );
 };
