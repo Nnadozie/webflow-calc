@@ -200,6 +200,10 @@ function SitePlan() {
     return resPlan;
   }
 
+  const [totalS, setTotalS] = useState({});
+
+  const onSiteChange = (a: number, b: number, c: number, d: number) => {};
+
   return (
     <>
       <Root>

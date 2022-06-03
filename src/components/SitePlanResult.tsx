@@ -9,6 +9,7 @@ interface SitePlanResult {
   animate?: boolean;
   controls?: boolean;
   showCount?: boolean;
+  onSiteChange?: (a: number, b: number, c: number, d: number) => void;
 }
 interface RootProps {
   animate?: boolean;
@@ -31,11 +32,21 @@ const Root = styled.div<RootProps>`
   }
 `;
 
-const SitePlanResult: React.FC<SitePlanResult> = ({ plan, animate, controls, showCount = true }) => {
+const SitePlanResult: React.FC<SitePlanResult> = ({ plan, animate, controls, showCount = true, onSiteChange }) => {
   const key = uuid();
   const billAnnual = plan?.billedAnnualyPerMonthPerSeatPrice ?? 0;
   const billMonthly = plan?.billedMonthlyPerMonthPerSeatPrice ?? 0;
   const [sites, setSites] = useState<number>(1);
+
+  useEffect(() => {
+    const monthlyBilledMonthly = 10;
+    const monthlyBilledAnnualy = 20;
+
+    const annualyBilledAnnualy = 30;
+    const annualyBilledMonthly = 40;
+    onSiteChange &&
+      onSiteChange(monthlyBilledAnnualy, monthlyBilledMonthly, annualyBilledAnnualy, annualyBilledMonthly);
+  }, [sites]);
   return (
     <Root key={key} animate={animate}>
       <p>
