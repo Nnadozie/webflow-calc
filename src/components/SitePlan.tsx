@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
 import styled from 'styled-components';
+import Selection from './Selection';
+import { v4 as uuid } from 'uuid';
 
 import SitePlanResult from './SitePlanResult';
 
@@ -85,8 +87,6 @@ const Root = styled.div`
     text-align: start;
     padding: 30px 40px 30px;
     border: 1px solid;
-    border-radius: 10px;
-
     button {
       padding: 10px;
     }
@@ -106,10 +106,13 @@ const Root = styled.div`
 
   input[type='number'],
   select {
-    max-width: 300px;
-    width: 250px;
+    width: 100%;
+    box-sizing: border-box;
     padding-left: 30px;
-    display: ;
+  }
+
+  button {
+    margin-top: 10px;
   }
 `;
 
@@ -200,9 +203,19 @@ function SitePlan() {
     return resPlan;
   }
 
-  const [totalS, setTotalS] = useState({});
+  const [totalSumCost, setTotalSumCost] = useState({
+    monthlyBilledAnnualy: 0,
+    monthlyBilledMonthly: 0,
+    annualyBilledAnnualy: 0,
+    annualyBilledMonthly: 0,
+  });
 
-  const onSiteChange = (a: number, b: number, c: number, d: number) => {};
+  const onSiteChange = (
+    monthlyBilledAnnualy: number,
+    monthlyBilledMonthly: number,
+    annualyBilledAnnualy: number,
+    annualyBilledMonthly: number,
+  ) => {};
 
   return (
     <>
@@ -231,18 +244,31 @@ function SitePlan() {
             Uptime SLA
             <input type="checkbox" placeholder="Uptime SLA" {...register('uptimeSla', {})} />
           </label>
-          <button type="submit">Add Site Plan</button>
+          <label></label>
+          <Selection key={uuid()} plan={plan}></Selection>
+
+          <button type="submit">Add Plan</button>
           {addedWarning && <h3>You already added one {plan.name} site plan</h3>}
         </form>
 
-        <SitePlanResult plan={plan} animate showCount={false}></SitePlanResult>
+        <div>
+          <SelectedPlans>
+            <h2>Added Site Plans</h2>
+            {addedPlans.map((plan) => (
+              <SitePlanResult key={plan.name} plan={plan} controls></SitePlanResult>
+            ))}
+          </SelectedPlans>
+          <p>Sum Total Annual Cost</p>
+          <p>Billed Annualy:{}</p>
+          <p>Billed Montlhy:</p>
+
+          <br></br>
+
+          <p>Sum Total Monthly Cost</p>
+          <p>Billed Annualy:</p>
+          <p>Billed Montlhy:</p>
+        </div>
       </Root>
-      <SelectedPlans>
-        <h2>Added Site Plans</h2>
-        {addedPlans.map((plan) => (
-          <SitePlanResult key={plan.name} plan={plan} controls></SitePlanResult>
-        ))}
-      </SelectedPlans>
     </>
   );
 }

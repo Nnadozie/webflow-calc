@@ -15,8 +15,6 @@ interface RootProps {
   animate?: boolean;
 }
 const Root = styled.div<RootProps>`
-  padding: 40px;
-
   span {
     border: 1px solid #f44336b8;
     animation: animate-background linear ${({ animate }) => (animate ? 0.1 : 0)}s;
@@ -38,15 +36,17 @@ const SitePlanResult: React.FC<SitePlanResult> = ({ plan, animate, controls, sho
   const billMonthly = plan?.billedMonthlyPerMonthPerSeatPrice ?? 0;
   const [sites, setSites] = useState<number>(1);
 
-  useEffect(() => {
-    const monthlyBilledMonthly = 10;
-    const monthlyBilledAnnualy = 20;
+  const monthlyBilledMonthly = billMonthly * sites;
+  const monthlyBilledAnnualy = billAnnual * sites;
 
-    const annualyBilledAnnualy = 30;
-    const annualyBilledMonthly = 40;
+  const annualyBilledAnnualy = billAnnual * 12 * sites;
+  const annualyBilledMonthly = billMonthly * 12 * sites;
+
+  useEffect(() => {
     onSiteChange &&
       onSiteChange(monthlyBilledAnnualy, monthlyBilledMonthly, annualyBilledAnnualy, annualyBilledMonthly);
   }, [sites]);
+
   return (
     <Root key={key} animate={animate}>
       <p>
@@ -58,18 +58,19 @@ const SitePlanResult: React.FC<SitePlanResult> = ({ plan, animate, controls, sho
       ---
       <p>
         Total Annual Cost Billed Annually: $
-        {billAnnual * 12 * sites === Infinity ? 'Custom Pricing' : billAnnual * 12 * sites}
+        {annualyBilledAnnualy === Infinity ? 'Custom Pricing' : annualyBilledAnnualy}
       </p>
       <p>
-        Total Annual Cost Billed Monthly: $
-        {billMonthly * 12 * sites === Infinity ? 'Custom Pricing' : billMonthly * 12 * sites}
+        Total Annual Cost Billed Monthly: ${annualyBilledMonthly === Infinity ? 'Custom Pricing' : annualyBilledMonthly}
       </p>
       ---
       <p>
-        Total Monthly Cost Billed Annually: ${billAnnual * sites === Infinity ? 'Custom Pricing' : billAnnual * sites}
+        Total Monthly Cost Billed Annually: $
+        {monthlyBilledAnnualy === Infinity ? 'Custom Pricing' : monthlyBilledAnnualy}
       </p>
       <p>
-        Total Monthly Cost Billed Monthly: ${billMonthly * sites === Infinity ? 'Custom Pricing' : billMonthly * sites}
+        Total Monthly Cost Billed Monthly: $
+        {monthlyBilledMonthly === Infinity ? 'Custom Pricing' : monthlyBilledMonthly}
       </p>
       {controls && (
         <>

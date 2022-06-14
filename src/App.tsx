@@ -8,9 +8,9 @@ import EcommercePlan from './components/EcommercePlan';
 function App() {
   return (
     <div className="App">
-      <WorkspacePlan />
+      {/* <WorkspacePlan /> */}
       <SitePlan />
-      <EcommercePlan />
+      {/* <EcommercePlan /> */}
     </div>
   );
 }
