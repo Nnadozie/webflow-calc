@@ -1,4 +1,3 @@
-import { ReactElement } from 'react';
 import styled from 'styled-components';
 import { SPlan } from './SitePlan';
 
@@ -21,7 +20,7 @@ const Root = styled.div`
   }
 `;
 
-const Selection: React.FC<ISelection> = ({ plan, animate }) => {
+const Selection: React.FC<ISelection> = ({ plan }) => {
   return (
     <Root>
       <h2>{plan?.name} Site Plan</h2>

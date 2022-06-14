@@ -1,7 +1,6 @@
-import React, { ReactElement, useEffect, useRef, useState } from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import { v4 as uuid } from 'uuid';
-import { IPlanState, SForm, SPlan } from './SitePlan';
+import { IPlanState, SPlan } from './SitePlan';
 
 interface SitePlanResult {
   plan: SPlan;
