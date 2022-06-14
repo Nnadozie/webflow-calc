@@ -351,7 +351,7 @@ function SitePlan() {
             {billing === 'yearly' && (
               <>
                 <div className="center">${annualyBilledAnnualy}/year</div>
-                <div className="center">${annualyBilledMonthly}/month</div>
+                <div className="center">${monthlyBilledAnnualy}/month</div>
               </>
             )}
           </Total>
