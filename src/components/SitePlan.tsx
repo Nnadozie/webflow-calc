@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { ChangeEventHandler, ReactEventHandler, useEffect, useState } from 'react';
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
 import styled from 'styled-components';
 import Selection from './Selection';
@@ -15,9 +15,9 @@ export interface SForm {
 }
 
 export interface SPlan extends SForm {
-  name?: string;
-  billedMonthlyPerMonthPerSeatPrice?: number;
-  billedAnnualyPerMonthPerSeatPrice?: number;
+  name: 'Starter' | 'Basic' | 'CMS' | 'Business' | 'Enterprise';
+  billedMonthlyPerMonthPerSeatPrice: number;
+  billedAnnualyPerMonthPerSeatPrice: number;
 }
 
 const plans: SPlan[] = [
@@ -83,13 +83,17 @@ const Root = styled.div`
   height: 540px;
 
   form {
-    width: 300px;
+    min-width: 550px;
+    max-width: 550px;
+    width: 550px;
     text-align: start;
     padding: 30px 40px 30px;
     border: 1px solid;
     button {
       padding: 10px;
     }
+    display: flex;
+    flex-direction: column;
   }
 
   label {
@@ -109,6 +113,7 @@ const Root = styled.div`
     width: 100%;
     box-sizing: border-box;
     padding-left: 30px;
+    padding-right: 30px;
   }
 
   button {
@@ -119,18 +124,43 @@ const Root = styled.div`
 const SelectedPlans = styled.div`
   display: flex;
   flex-wrap: wrap;
+  flex-direction: column;
   h2 {
     min-width: 100%;
     margin: 0px 40px;
   }
   border: 1px solid;
   min-height: 370px;
+  padding: 40px;
+
+  .choose-pricing {
+    margin-left: auto;
+    display: flex;
+  }
+
+  max-width: 550px;
+  width: 550px;
 `;
+
+export interface IPlanState {
+  Starter: number;
+  Basic: number;
+  CMS: number;
+  Business: number;
+  Enterprise: number;
+}
 
 function SitePlan() {
   const [plan, setPlan] = useState<SPlan>(plans[0]);
-  const [addedPlans, setAddedPlans] = useState<SPlan[]>([]);
+  const [countPlans, setCountPlans] = useState<IPlanState>({
+    Starter: 0,
+    Basic: 0,
+    CMS: 0,
+    Business: 0,
+    Enterprise: 0,
+  });
   const [addedWarning, setAddedWarning] = useState<boolean>(false);
+  const [billing, setBilling] = useState<'yearly' | 'monthly'>('yearly');
   const {
     register,
     handleSubmit,
@@ -148,8 +178,8 @@ function SitePlan() {
   });
 
   const onSubmit: SubmitHandler<FieldValues> = () => {
-    if (!addedPlans.find((addedPlan) => plan.name === addedPlan.name)) {
-      setAddedPlans([...addedPlans, plan]);
+    if (countPlans[plan.name] <= 0) {
+      setCountPlans({ ...countPlans, [plan.name]: countPlans[plan.name] + 1 });
     } else {
       setAddedWarning(true);
     }
@@ -203,19 +233,9 @@ function SitePlan() {
     return resPlan;
   }
 
-  const [totalSumCost, setTotalSumCost] = useState({
-    monthlyBilledAnnualy: 0,
-    monthlyBilledMonthly: 0,
-    annualyBilledAnnualy: 0,
-    annualyBilledMonthly: 0,
-  });
-
-  const onSiteChange = (
-    monthlyBilledAnnualy: number,
-    monthlyBilledMonthly: number,
-    annualyBilledAnnualy: number,
-    annualyBilledMonthly: number,
-  ) => {};
+  const onSelect: ChangeEventHandler<HTMLSelectElement> = (e) => {
+    setBilling(e.target.value as 'monthly' | 'yearly');
+  };
 
   return (
     <>
@@ -248,15 +268,31 @@ function SitePlan() {
           <Selection key={uuid()} plan={plan}></Selection>
 
           <button type="submit">Add Plan</button>
-          {addedWarning && <h3>You already added one {plan.name} site plan</h3>}
+          {addedWarning && <h3>You already added one {plan.name?.toLocaleLowerCase()} site. Increment to add more.</h3>}
         </form>
 
         <div>
           <SelectedPlans>
-            <h2>Added Site Plans</h2>
-            {addedPlans.map((plan) => (
-              <SitePlanResult key={plan.name} plan={plan} controls></SitePlanResult>
-            ))}
+            <div className="choose-pricing">
+              <label>
+                <select value={billing} onChange={onSelect}>
+                  <option selected value="yearly">
+                    Billed yearly
+                  </option>
+                  <option value="monthly">Billed monthly</option>
+                </select>
+              </label>
+            </div>
+            {['Starter', 'Basic', 'CMS', 'Business', 'Enterprise'].map((key) => {
+              return countPlans[key as 'Starter' | 'Basic' | 'CMS' | 'Business' | 'Enterprise'] > 0 ? (
+                <SitePlanResult
+                  plan={plans.find((val) => val.name === key) as SPlan}
+                  billing={billing}
+                  countPlans={countPlans}
+                  setCountPlans={setCountPlans}
+                ></SitePlanResult>
+              ) : null;
+            })}
           </SelectedPlans>
           <p>Sum Total Annual Cost</p>
           <p>Billed Annualy:{}</p>
