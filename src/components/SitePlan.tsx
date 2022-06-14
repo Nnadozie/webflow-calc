@@ -142,6 +142,31 @@ const SelectedPlans = styled.div`
   width: 550px;
 `;
 
+const Total = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+
+  border: 1px solid;
+  padding: 40px;
+
+  max-width: 550px;
+  width: 550px;
+
+  .center {
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  h2 {
+    margin-bottom: 5px;
+  }
+  .label {
+    width: 230px;
+  }
+`;
+
 export interface IPlanState {
   Starter: number;
   Basic: number;
@@ -237,6 +262,24 @@ function SitePlan() {
     setBilling(e.target.value as 'monthly' | 'yearly');
   };
 
+  const monthlyBilledMonthly = plans.reduce((prev, curr) => {
+    return curr.name === 'Enterprise' ? prev : prev + countPlans[curr.name] * curr.billedMonthlyPerMonthPerSeatPrice;
+  }, 0);
+  const monthlyBilledAnnualy = plans.reduce((prev, curr) => {
+    return curr.name === 'Enterprise' ? prev : prev + countPlans[curr.name] * curr.billedAnnualyPerMonthPerSeatPrice;
+  }, 0);
+
+  const annualyBilledAnnualy = plans.reduce((prev, curr) => {
+    return curr.name === 'Enterprise'
+      ? prev
+      : prev + countPlans[curr.name] * curr.billedAnnualyPerMonthPerSeatPrice * 12;
+  }, 0);
+  const annualyBilledMonthly = plans.reduce((prev, curr) => {
+    return curr.name === 'Enterprise'
+      ? prev
+      : prev + countPlans[curr.name] * curr.billedMonthlyPerMonthPerSeatPrice * 12;
+  }, 0);
+
   return (
     <>
       <Root>
@@ -283,10 +326,10 @@ function SitePlan() {
                 </select>
               </label>
             </div>
-            {['Starter', 'Basic', 'CMS', 'Business', 'Enterprise'].map((key) => {
-              return countPlans[key as 'Starter' | 'Basic' | 'CMS' | 'Business' | 'Enterprise'] > 0 ? (
+            {plans.map((plan) => {
+              return countPlans[plan.name] > 0 ? (
                 <SitePlanResult
-                  plan={plans.find((val) => val.name === key) as SPlan}
+                  plan={plans.find((val) => val.name === plan.name) as SPlan}
                   billing={billing}
                   countPlans={countPlans}
                   setCountPlans={setCountPlans}
@@ -294,15 +337,24 @@ function SitePlan() {
               ) : null;
             })}
           </SelectedPlans>
-          <p>Sum Total Annual Cost</p>
-          <p>Billed Annualy:{}</p>
-          <p>Billed Montlhy:</p>
-
-          <br></br>
-
-          <p>Sum Total Monthly Cost</p>
-          <p>Billed Annualy:</p>
-          <p>Billed Montlhy:</p>
+          <Total>
+            <div className="label">
+              <h2>Sum Total</h2>
+              <sub>Excludes enterprise sites</sub>
+            </div>
+            {billing === 'monthly' && (
+              <>
+                <div className="center">${annualyBilledMonthly}/year</div>
+                <div className="center">${monthlyBilledMonthly}/month</div>
+              </>
+            )}
+            {billing === 'yearly' && (
+              <>
+                <div className="center">${annualyBilledAnnualy}/year</div>
+                <div className="center">${annualyBilledMonthly}/month</div>
+              </>
+            )}
+          </Total>
         </div>
       </Root>
     </>

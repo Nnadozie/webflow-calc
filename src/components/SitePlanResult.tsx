@@ -36,13 +36,13 @@ const Root = styled.div<RootProps>`
 
   button {
     margin-right: 10px;
+    width: 85px;
   }
 `;
 
 const SitePlanResult: React.FC<SitePlanResult> = ({ plan, billing, countPlans, setCountPlans }) => {
   const billAnnual = plan?.billedAnnualyPerMonthPerSeatPrice ?? 0;
   const billMonthly = plan?.billedMonthlyPerMonthPerSeatPrice ?? 0;
-  //const [sites, setSites] = useState<number>(1);
   useEffect(() => {
     setCountPlans({ ...countPlans, [plan.name]: 1 });
   }, []);
@@ -62,7 +62,7 @@ const SitePlanResult: React.FC<SitePlanResult> = ({ plan, billing, countPlans, s
         {plan.name === 'Starter' && <sub>Subject to workspace limits</sub>}
         <div>
           <button onClick={() => setCountPlans({ ...countPlans, [plan.name]: countPlans[plan.name] - 1 })}>
-            Decrement
+            {countPlans[plan.name] === 1 ? 'Remove' : 'Decrement'}
           </button>
           <button onClick={() => setCountPlans({ ...countPlans, [plan.name]: countPlans[plan.name] + 1 })}>
             Increment
