@@ -1,6 +1,8 @@
-import { useEffect, useState } from 'react';
+import { ChangeEventHandler, ReactEventHandler, useEffect, useState } from 'react';
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
 import styled from 'styled-components';
+import Selection from './Selection';
+import { v4 as uuid } from 'uuid';
 
 import EcommercePlanResult from './EcommercePlanResult';
 
@@ -14,9 +16,10 @@ export interface EForm {
 }
 
 export interface EPlan extends EForm {
-  name?: string;
-  billedMonthlyPerMonthPerSeatPrice?: number;
-  billedAnnualyPerMonthPerSeatPrice?: number;
+  name: 'Standard' | 'Plus' | 'Advanced';
+  billedMonthlyPerMonthPerSeatPrice: number;
+  billedAnnualyPerMonthPerSeatPrice: number;
+  inputSalesVolume?: number;
 }
 
 const plans: EPlan[] = [
@@ -67,15 +70,17 @@ const Root = styled.div`
   padding: 40px;
 
   form {
-    width: 300px;
+    min-width: 550px;
+    max-width: 550px;
+    width: 550px;
     text-align: start;
     padding: 30px 40px 30px;
     border: 1px solid;
-    border-radius: 10px;
-
     button {
       padding: 10px;
     }
+    display: flex;
+    flex-direction: column;
   }
 
   label {
@@ -92,14 +97,78 @@ const Root = styled.div`
 
   input[type='number'],
   select {
-    max-width: 300px;
-    width: 250px;
+    width: 100%;
+    box-sizing: border-box;
     padding-left: 30px;
+    padding-right: 30px;
+  }
+
+  button {
+    margin-top: 10px;
   }
 `;
 
+const SelectedPlans = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  h2 {
+    min-width: 100%;
+    margin: 0px 40px;
+  }
+  border: 1px solid;
+  min-height: 370px;
+  padding: 40px;
+
+  .choose-pricing {
+    margin-left: auto;
+    display: flex;
+  }
+
+  max-width: 550px;
+  width: 550px;
+`;
+
+const Total = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+
+  border: 1px solid;
+  padding: 40px;
+
+  max-width: 550px;
+  width: 550px;
+
+  .center {
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  h2 {
+    margin-bottom: 5px;
+  }
+  .label {
+    width: 230px;
+  }
+`;
+
+export interface IPlanState {
+  Standard: number;
+  Plus: number;
+  Advanced: number;
+}
+
 function EcommercePlan() {
   const [plan, setPlan] = useState<EPlan>(plans[0]);
+  const [countPlans, setCountPlans] = useState<IPlanState>({
+    Standard: 0,
+    Plus: 0,
+    Advanced: 0,
+  });
+  const [addedWarning, setAddedWarning] = useState<boolean>(false);
+  const [billing, setBilling] = useState<'yearly' | 'monthly'>('yearly');
   const {
     register,
     handleSubmit,
@@ -114,17 +183,22 @@ function EcommercePlan() {
       bandwidth: 1,
       guestEditors: 0,
 
-      transactionFee: 0,
+      transactionFee: 2,
       annualSalesVolume: 0,
     },
   });
 
-  const onSubmit: SubmitHandler<FieldValues> = (data) => {
-    //setPlan(findPlan(plans, data));
+  const onSubmit: SubmitHandler<FieldValues> = () => {
+    if (countPlans[plan.name] <= 0) {
+      setCountPlans({ ...countPlans, [plan.name]: countPlans[plan.name] + 1 });
+    } else {
+      setAddedWarning(true);
+    }
   };
 
   const formData = watch();
   useEffect(() => {
+    console.log('here');
     if (formData.cmsItems > 3000) setValue('cmsItems', 3000);
     if (formData.cmsItems < 0) setValue('cmsItems', 0);
 
@@ -136,9 +210,11 @@ function EcommercePlan() {
 
     if (formData.annualSalesVolume > 50000) setValue('transactionFee', 0);
 
+    //if (formData.annualSalesVolume <= 50000) setValue('transactionFee', 2);
+
     const newPlan = findPlan(plans, formData);
     if (newPlan.name !== plan.name) {
-      setPlan(newPlan);
+      setPlan({ ...newPlan, inputSalesVolume: formData.annualSalesVolume });
     }
   }, [formData]);
 
@@ -175,45 +251,110 @@ function EcommercePlan() {
     return reEPlan;
   }
 
+  const onSelect: ChangeEventHandler<HTMLSelectElement> = (e) => {
+    setBilling(e.target.value as 'monthly' | 'yearly');
+  };
+
+  const monthlyBilledMonthly = plans.reduce((prev, curr) => {
+    return prev + countPlans[curr.name] * curr.billedMonthlyPerMonthPerSeatPrice;
+  }, 0);
+  const monthlyBilledAnnualy = plans.reduce((prev, curr) => {
+    return prev + countPlans[curr.name] * curr.billedAnnualyPerMonthPerSeatPrice;
+  }, 0);
+
+  const annualyBilledAnnualy = plans.reduce((prev, curr) => {
+    return prev + countPlans[curr.name] * curr.billedAnnualyPerMonthPerSeatPrice * 12;
+  }, 0);
+  const annualyBilledMonthly = plans.reduce((prev, curr) => {
+    return prev + countPlans[curr.name] * curr.billedMonthlyPerMonthPerSeatPrice * 12;
+  }, 0);
+
   return (
-    <Root>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <h2>Add Ecommerce Plan</h2>
-        <label>
-          Custom Domain
-          <input type="checkbox" placeholder="Custom Domain" defaultValue="1" {...register('customDomain')} />
-        </label>
+    <>
+      <Root>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <h2>Add Ecommerce Plan</h2>
+          <label>
+            Custom Domain
+            <input type="checkbox" placeholder="Custom Domain" defaultValue="1" {...register('customDomain')} />
+          </label>
 
-        <label>
-          CMS Items
-          <input type="number" placeholder="CMS Items" defaultValue="2" {...register('cmsItems')} />
-        </label>
+          <label>
+            CMS Items
+            <input type="number" placeholder="CMS Items" defaultValue="2" {...register('cmsItems')} />
+          </label>
 
-        <label>
-          Bandwidth (GB)
-          <input type="number" placeholder="Bandwidth" {...register('bandwidth', {})} />
-        </label>
-        <label>
-          Guest Editors
-          <input type="number" placeholder="Guest Editors" {...register('guestEditors', {})} />
-        </label>
+          <label>
+            Bandwidth (GB)
+            <input type="number" placeholder="Bandwidth" {...register('bandwidth', {})} />
+          </label>
+          <label>
+            Guest Editors
+            <input type="number" placeholder="Guest Editors" {...register('guestEditors', {})} />
+          </label>
 
-        <label>
-          Transaction Fee (%)
-          <select {...register('transactionFee')}>
-            <option value="0">0</option>
-            <option value="2">2</option>
-          </select>
-        </label>
-        <label>
-          Annual Sales Volume ($)
-          <input type="number" placeholder="Annual Sales Volume" {...register('annualSalesVolume', {})} />
-        </label>
-        {/* <button type="submit">Add Workspace Plan</button> */}
-      </form>
+          <label>
+            Transaction Fee (%)
+            <select {...register('transactionFee')}>
+              <option value="0">0</option>
+              <option value="2">2</option>
+            </select>
+          </label>
+          <label>
+            Annual Sales Volume ($)
+            <input type="number" placeholder="Annual Sales Volume" {...register('annualSalesVolume', {})} />
+          </label>
+          <Selection key={uuid()}>
+            <h2>{plan?.name} Ecommerce Plan</h2>
+          </Selection>
 
-      <EcommercePlanResult seats={1} plan={plan} data={formData}></EcommercePlanResult>
-    </Root>
+          <button type="submit">Add Plan</button>
+          {addedWarning && <h3>You already added one {plan.name?.toLocaleLowerCase()} site. Increment to add more.</h3>}
+        </form>
+
+        <div>
+          <SelectedPlans>
+            <div className="choose-pricing">
+              <label>
+                <select value={billing} onChange={onSelect}>
+                  <option selected value="yearly">
+                    Billed yearly
+                  </option>
+                  <option value="monthly">Billed monthly</option>
+                </select>
+              </label>
+            </div>
+            {plans.map((plan) => {
+              return countPlans[plan.name] > 0 ? (
+                <EcommercePlanResult
+                  plan={plans.find((val) => val.name === plan.name) as EPlan}
+                  billing={billing}
+                  countPlans={countPlans}
+                  setCountPlans={setCountPlans}
+                ></EcommercePlanResult>
+              ) : null;
+            })}
+          </SelectedPlans>
+          <Total>
+            <div className="label">
+              <h2>Total</h2>
+            </div>
+            {billing === 'monthly' && (
+              <>
+                <div className="center">${annualyBilledMonthly}/year</div>
+                <div className="center">${monthlyBilledMonthly}/month</div>
+              </>
+            )}
+            {billing === 'yearly' && (
+              <>
+                <div className="center">${annualyBilledAnnualy}/year</div>
+                <div className="center">${monthlyBilledAnnualy}/month</div>
+              </>
+            )}
+          </Total>
+        </div>
+      </Root>
+    </>
   );
 }
 

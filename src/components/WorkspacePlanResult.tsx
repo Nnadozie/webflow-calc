@@ -1,13 +1,12 @@
 // import { ReactElement } from 'react';
 // import styled from 'styled-components';
 // import { v4 as uuid } from 'uuid';
-// import { EForm, EPlan } from './EcommercePlan';
+// import { WPlan } from './WorkspacePlan';
 
-// interface EcommercePlanResult {
+// interface WorkspacePlanResult {
 //   children?: ReactElement;
-//   plan?: EPlan;
+//   plan?: WPlan;
 //   seats: number;
-//   data: EForm;
 // }
 
 // const Root = styled.div`
@@ -28,18 +27,15 @@
 //   }
 // `;
 
-// const EcommercePlanResult: React.FC<EcommercePlanResult> = ({ plan, seats, data }) => {
+// const WorkspacePlanResult: React.FC<WorkspacePlanResult> = ({ plan, seats }) => {
 //   const key = uuid();
 //   const billAnnual = plan?.billedAnnualyPerMonthPerSeatPrice ?? 0;
 //   const billMonthly = plan?.billedMonthlyPerMonthPerSeatPrice ?? 0;
 //   return (
 //     <Root key={key}>
 //       <p>
-//         Plan Name: <span>{plan?.name} Site Plan</span>
+//         Plan Name: <span>{plan?.name} Workspace Plan</span>
 //       </p>
-//       {data.annualSalesVolume > 0 && data.transactionFee > 0 && (
-//         <p>Transaction Fee Cut: ${data.annualSalesVolume * (data.transactionFee * 0.01)}</p>
-//       )}
 //       ---
 //       <p>
 //         Total Annual Cost Billed Annually: $
@@ -60,17 +56,16 @@
 //   );
 // };
 
-// export default EcommercePlanResult;
+// export default WorkspacePlanResult;
 
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import { EPlan, IPlanState } from './EcommercePlan';
+import { IPlanState, WPlan } from './WorkspacePlan';
 
-interface EcommercePlanResult {
-  plan: EPlan;
-  billing?: 'yearly' | 'monthly';
-  countPlans: IPlanState;
-  setCountPlans: React.Dispatch<React.SetStateAction<IPlanState>>;
+interface WorkspacePlanResult {
+  plan: WPlan;
+  billing: 'yearly' | 'monthly';
+  seats: number;
 }
 interface RootProps {
   animate?: boolean;
@@ -103,46 +98,53 @@ const Root = styled.div<RootProps>`
   }
 `;
 
-const EcommercePlanResult: React.FC<EcommercePlanResult> = ({ plan, billing, countPlans, setCountPlans }) => {
+const WorkspacePlanResult: React.FC<WorkspacePlanResult> = ({ plan, billing, seats }) => {
   const billAnnual = plan?.billedAnnualyPerMonthPerSeatPrice ?? 0;
   const billMonthly = plan?.billedMonthlyPerMonthPerSeatPrice ?? 0;
-  const inputSalesVolume = plan.inputSalesVolume ? plan.inputSalesVolume : 0;
-  useEffect(() => {
-    setCountPlans({ ...countPlans, [plan.name]: 1 });
-  }, []);
-  const sites = countPlans[plan.name];
-  const monthlyBilledMonthly = billMonthly * sites;
-  const monthlyBilledAnnualy = billAnnual * sites;
 
-  const annualyBilledAnnualy = billAnnual * 12 * sites;
-  const annualyBilledMonthly = billMonthly * 12 * sites;
+  const monthlyBilledMonthly = billMonthly * seats;
+  const monthlyBilledAnnualy = billAnnual * seats;
+
+  const annualyBilledAnnualy = billAnnual * 12 * seats;
+  const annualyBilledMonthly = billMonthly * 12 * seats;
 
   return (
     <Root>
       <div className="plan-name">
-        <h3>
-          {plan?.name} Ecommerce Site {`x ${sites}`}
-        </h3>
-        <div>
+        <h3>{plan?.name} Workspace</h3>
+        <p>
+          {seats} seat{seats === 1 ? '' : 's'}
+        </p>
+        {plan.name === 'Starter' && <sub>Subject to free workspace limits</sub>}
+        {/* <div>
           <button onClick={() => setCountPlans({ ...countPlans, [plan.name]: countPlans[plan.name] - 1 })}>
             {countPlans[plan.name] === 1 ? 'Remove' : 'Decrement'}
           </button>
           <button onClick={() => setCountPlans({ ...countPlans, [plan.name]: countPlans[plan.name] + 1 })}>
             Increment
           </button>
-        </div>
+        </div> */}
       </div>
-      <div className="price">
-        {billing === 'yearly' && <p>${annualyBilledAnnualy}/year</p>}
-        {billing === 'monthly' && <p>${annualyBilledMonthly}/year</p>}
-      </div>
-      <div className="price">
-        {billing === 'yearly' && <p>${monthlyBilledAnnualy}/month</p>}
-        {billing === 'monthly' && <p>${monthlyBilledMonthly}/month</p>}
-      </div>
-      <div>Commission: {plan.transactionFee * inputSalesVolume}</div>
+      {plan?.name === 'Enterprise' ? (
+        <div className="price">Custom pricing</div>
+      ) : plan?.name === 'Starter' ? (
+        <>
+          <div className="price">Free</div>
+        </>
+      ) : (
+        <>
+          <div className="price">
+            {billing === 'yearly' && <p>${annualyBilledAnnualy}/year</p>}
+            {billing === 'monthly' && <p>${annualyBilledMonthly}/year</p>}
+          </div>
+          <div className="price">
+            {billing === 'yearly' && <p>${monthlyBilledAnnualy}/month</p>}
+            {billing === 'monthly' && <p>${monthlyBilledMonthly}/month</p>}
+          </div>
+        </>
+      )}
     </Root>
   );
 };
 
-export default EcommercePlanResult;
+export default WorkspacePlanResult;

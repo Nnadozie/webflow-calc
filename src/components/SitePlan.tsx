@@ -80,7 +80,6 @@ const Root = styled.div`
   display: flex;
   flex-wrap: wrap;
   padding: 40px;
-  height: 540px;
 
   form {
     min-width: 550px;
@@ -308,7 +307,9 @@ function SitePlan() {
             <input type="checkbox" placeholder="Uptime SLA" {...register('uptimeSla', {})} />
           </label>
           <label></label>
-          <Selection key={uuid()} plan={plan}></Selection>
+          <Selection key={uuid()}>
+            <h2>{plan?.name} Site Plan</h2>
+          </Selection>
 
           <button type="submit">Add Plan</button>
           {addedWarning && <h3>You already added one {plan.name?.toLocaleLowerCase()} site. Increment to add more.</h3>}
@@ -339,7 +340,7 @@ function SitePlan() {
           </SelectedPlans>
           <Total>
             <div className="label">
-              <h2>Sum Total</h2>
+              <h2>Total</h2>
               <sub>Excludes enterprise sites</sub>
             </div>
             {billing === 'monthly' && (

@@ -1,9 +1,8 @@
+import { ReactElement } from 'react';
 import styled from 'styled-components';
-import { SPlan } from './SitePlan';
 
 interface ISelection {
-  plan?: SPlan;
-  animate?: boolean;
+  children: ReactElement;
 }
 
 const Root = styled.div`
@@ -20,12 +19,8 @@ const Root = styled.div`
   }
 `;
 
-const Selection: React.FC<ISelection> = ({ plan }) => {
-  return (
-    <Root>
-      <h2>{plan?.name} Site Plan</h2>
-    </Root>
-  );
+const Selection: React.FC<ISelection> = ({ children }) => {
+  return <Root>{children}</Root>;
 };
 
 export default Selection;
