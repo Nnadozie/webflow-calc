@@ -83,93 +83,93 @@ const plans: WPlan[] = [
 ];
 
 const Root = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  padding: 40px;
+  // display: flex;
+  // flex-wrap: wrap;
+  // padding: 40px;
 
-  form {
-    min-width: 550px;
-    max-width: 550px;
-    width: 550px;
-    text-align: start;
-    padding: 30px 40px 30px;
-    border: 1px solid;
-    button {
-      padding: 10px;
-    }
-    display: flex;
-    flex-direction: column;
-  }
+  // form {
+  //   min-width: 550px;
+  //   max-width: 550px;
+  //   width: 550px;
+  //   text-align: start;
+  //   padding: 30px 40px 30px;
+  //   border: 1px solid;
+  //   button {
+  //     padding: 10px;
+  //   }
+  //   display: flex;
+  //   flex-direction: column;
+  // }
 
-  label {
-    display: block;
-  }
+  // label {
+  //   display: block;
+  // }
 
-  input,
-  select {
-    display: block;
-    margin-top: 3px;
-    margin-bottom: 3px;
-    height: 30px;
-  }
+  // input,
+  // select {
+  //   display: block;
+  //   margin-top: 3px;
+  //   margin-bottom: 3px;
+  //   height: 30px;
+  // }
 
-  input[type='number'],
-  select {
-    width: 100%;
-    box-sizing: border-box;
-    padding-left: 30px;
-    padding-right: 30px;
-  }
+  // input[type='number'],
+  // select {
+  //   width: 100%;
+  //   box-sizing: border-box;
+  //   padding-left: 30px;
+  //   padding-right: 30px;
+  // }
 
-  button {
-    margin-top: 10px;
-  }
+  // button {
+  //   margin-top: 10px;
+  // }
 `;
 
 const SelectedPlans = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  flex-direction: column;
-  h2 {
-    min-width: 100%;
-    margin: 0px 40px;
-  }
-  border: 1px solid;
-  min-height: 370px;
-  padding: 40px;
+  // display: flex;
+  // flex-wrap: wrap;
+  // flex-direction: column;
+  // h2 {
+  //   min-width: 100%;
+  //   margin: 0px 40px;
+  // }
+  // border: 1px solid;
+  // min-height: 370px;
+  // padding: 40px;
 
-  .choose-pricing {
-    margin-left: auto;
-    display: flex;
-  }
+  // .choose-pricing {
+  //   margin-left: auto;
+  //   display: flex;
+  // }
 
-  max-width: 550px;
-  width: 550px;
+  // max-width: 550px;
+  // width: 550px;
 `;
 
 const Total = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  flex-direction: row;
+  // display: flex;
+  // flex-wrap: wrap;
+  // flex-direction: row;
 
-  border: 1px solid;
-  padding: 40px;
+  // border: 1px solid;
+  // padding: 40px;
 
-  max-width: 550px;
-  width: 550px;
+  // max-width: 550px;
+  // width: 550px;
 
-  .center {
-    padding: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  h2 {
-    margin-bottom: 5px;
-  }
-  .label {
-    width: 230px;
-  }
+  // .center {
+  //   padding: 10px;
+  //   display: flex;
+  //   align-items: center;
+  //   justify-content: center;
+  // }
+  // h2 {
+  //   margin-bottom: 5px;
+  // }
+  // .label {
+  //   width: 230px;
+  // }
 `;
 
 export interface IPlanState {
@@ -305,53 +305,82 @@ function WorkspacePlan() {
 
   return (
     <>
-      <Root>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <h2>Add Workspace Plan</h2>
-          <label>
-            Seats
-            <input type="number" placeholder="Seats" defaultValue="1" {...register('seats')} />
-          </label>
-          <label>
-            Unhosted Sites
-            <input type="number" placeholder="Unhosted Sites" defaultValue="2" {...register('unhostedSites')} />
-          </label>
-          <label>
-            Custom Code
-            <input type="checkbox" placeholder="Custom Code" {...register('customCode', {})} />
-          </label>
-          <label>
-            Code Export
-            <input type="checkbox" placeholder="Code Export" {...register('codeExport', {})} />
-          </label>
-          <label>
-            Billing Permissions
-            <input type="checkbox" placeholder="Billing Permissions" {...register('billingPermissions', {})} />
-          </label>
-          <label>
-            Publishing Permissions
-            <input type="checkbox" placeholder="Publishing Permissions" {...register('publishingPermissions', {})} />
-          </label>
-          <label>
-            Advanced Permissions
-            <input type="checkbox" placeholder="Advanced Permissions" {...register('advancedPermissions', {})} />
-          </label>
-          <label>
-            Advanced Security
-            <input type="checkbox" placeholder="Advanced Security" {...register('advancedSecurity', {})} />
-          </label>
-          {/* <Selection key={uuid()}>
+      <Root className="plan-container">
+        <div className="form-div">
+          <form onSubmit={handleSubmit(onSubmit)} className="form">
+            <h2>Add Workspace Plan</h2>
+            <label>Seats</label>
+            <input type="number" placeholder="Seats" defaultValue="1" {...register('seats')} className="text-field" />
+
+            <label>Unhosted Sites</label>
+            <input
+              type="number"
+              placeholder="Unhosted Sites"
+              defaultValue="2"
+              {...register('unhostedSites')}
+              className="text-field"
+            />
+
+            <label>Custom Code</label>
+            <input
+              type="checkbox"
+              placeholder="Custom Code"
+              {...register('customCode', {})}
+              className="checkbox-field"
+            />
+
+            <label>Code Export</label>
+            <input
+              type="checkbox"
+              placeholder="Code Export"
+              {...register('codeExport', {})}
+              className="checkbox-field"
+            />
+
+            <label>Billing Permissions</label>
+            <input
+              type="checkbox"
+              placeholder="Billing Permissions"
+              {...register('billingPermissions', {})}
+              className="checkbox-field"
+            />
+
+            <label>Publishing Permissions</label>
+            <input
+              type="checkbox"
+              placeholder="Publishing Permissions"
+              {...register('publishingPermissions', {})}
+              className="checkbox-field"
+            />
+
+            <label>Advanced Permissions</label>
+            <input
+              type="checkbox"
+              placeholder="Advanced Permissions"
+              {...register('advancedPermissions', {})}
+              className="checkbox-field"
+            />
+
+            <label>Advanced Security</label>
+            <input
+              type="checkbox"
+              placeholder="Advanced Security"
+              {...register('advancedSecurity', {})}
+              className="checkbox-field"
+            />
+
+            {/* <Selection key={uuid()}>
             <h2>{plan?.name} Workspace Plan</h2>
           </Selection> */}
-          {/* <button type="submit">Add Plan</button>
+            {/* <button type="submit">Add Plan</button>
           {addedWarning && <h3>You already added one {plan.name?.toLocaleLowerCase()} site. Increment to add more.</h3>} */}
-        </form>
-
-        <div>
-          <SelectedPlans>
+          </form>
+        </div>
+        <div className="plan-output">
+          <SelectedPlans className="selected-plans">
             <div className="choose-pricing">
-              <label>
-                <select value={billing} onChange={onSelect}>
+              <label className="label-standin">
+                <select value={billing} onChange={onSelect} className="select-standin">
                   <option selected value="yearly">
                     Billed yearly
                   </option>
@@ -371,24 +400,24 @@ function WorkspacePlan() {
             })} */}
             {<WorkspacePlanResult plan={plan} billing={billing} seats={seats}></WorkspacePlanResult>}
           </SelectedPlans>
-          <Total>
-            <div className="label">
-              <h2>Total</h2>
+          <Total className="total">
+            <div className="total-label">
+              <h2 className="total-text">Total</h2>
             </div>
             {plan.name === 'Enterprise' ? (
-              <div className="center">Custom Pricing</div>
+              <div className="price">Custom Pricing</div>
             ) : (
               <>
                 {billing === 'monthly' && (
                   <>
-                    <div className="center">${annualyBilledMonthly}/year</div>
-                    <div className="center">${monthlyBilledMonthly}/month</div>
+                    <div className="price">${annualyBilledMonthly}/year</div>
+                    <div className="price">${monthlyBilledMonthly}/month</div>
                   </>
                 )}
                 {billing === 'yearly' && (
                   <>
-                    <div className="center">${annualyBilledAnnualy}/year</div>
-                    <div className="center">${monthlyBilledAnnualy}/month</div>
+                    <div className="price">${annualyBilledAnnualy}/year</div>
+                    <div className="price">${monthlyBilledAnnualy}/month</div>
                   </>
                 )}
               </>

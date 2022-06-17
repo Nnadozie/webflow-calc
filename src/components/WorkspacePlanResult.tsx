@@ -71,31 +71,31 @@ interface RootProps {
   animate?: boolean;
 }
 const Root = styled.div<RootProps>`
-  margin-bottom: 10px;
-  padding: 10px;
-  border: 1px solid #000000;
-  h3 {
-    margin-bottom: 5px;
-  }
-  display: flex;
-  flex-direction: row;
+  // margin-bottom: 10px;
+  // padding: 10px;
+  // border: 1px solid #000000;
+  // h3 {
+  //   margin-bottom: 5px;
+  // }
+  // display: flex;
+  // flex-direction: row;
 
-  .price {
-    padding: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+  // .price {
+  //   padding: 10px;
+  //   display: flex;
+  //   align-items: center;
+  //   justify-content: center;
+  // }
 
-  .plan-name {
-    max-width: 230px;
-    width: 230px;
-  }
+  // .plan-name {
+  //   max-width: 230px;
+  //   width: 230px;
+  // }
 
-  button {
-    margin-right: 10px;
-    width: 85px;
-  }
+  // button {
+  //   margin-right: 10px;
+  //   width: 85px;
+  // }
 `;
 
 const WorkspacePlanResult: React.FC<WorkspacePlanResult> = ({ plan, billing, seats }) => {
@@ -109,13 +109,13 @@ const WorkspacePlanResult: React.FC<WorkspacePlanResult> = ({ plan, billing, sea
   const annualyBilledMonthly = billMonthly * 12 * seats;
 
   return (
-    <Root>
-      <div className="plan-name">
-        <h3>{plan?.name} Workspace</h3>
+    <Root className="plan-card">
+      <div className="plan-quantity">
+        <h3 className="plan-name">{plan?.name} Workspace</h3>
         <p>
           {seats} seat{seats === 1 ? '' : 's'}
         </p>
-        {plan.name === 'Starter' && <sub>Subject to free workspace limits</sub>}
+        {plan.name === 'Starter' && <sub className="plan-warning">Subject to free workspace limits</sub>}
         {/* <div>
           <button onClick={() => setCountPlans({ ...countPlans, [plan.name]: countPlans[plan.name] - 1 })}>
             {countPlans[plan.name] === 1 ? 'Remove' : 'Decrement'}
