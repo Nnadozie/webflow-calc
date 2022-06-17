@@ -1,10 +1,11 @@
-import { ChangeEventHandler, ReactEventHandler, useEffect, useState } from 'react';
+import { ChangeEventHandler, ReactEventHandler, useContext, useEffect, useState } from 'react';
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
 import styled from 'styled-components';
 import Selection from './Selection';
 import { v4 as uuid } from 'uuid';
 
 import EcommercePlanResult from './EcommercePlanResult';
+import { Context } from '../state/store';
 
 export interface EForm {
   customDomain: boolean;
@@ -19,7 +20,6 @@ export interface EPlan extends EForm {
   name: 'Standard' | 'Plus' | 'Advanced';
   billedMonthlyPerMonthPerSeatPrice: number;
   billedAnnualyPerMonthPerSeatPrice: number;
-  inputSalesVolume?: number;
 }
 
 const plans: EPlan[] = [
@@ -214,7 +214,7 @@ function EcommercePlan() {
 
     const newPlan = findPlan(plans, formData);
     if (newPlan.name !== plan.name) {
-      setPlan({ ...newPlan, inputSalesVolume: formData.annualSalesVolume });
+      setPlan(newPlan);
     }
   }, [formData]);
 
@@ -268,6 +268,23 @@ function EcommercePlan() {
   const annualyBilledMonthly = plans.reduce((prev, curr) => {
     return prev + countPlans[curr.name] * curr.billedMonthlyPerMonthPerSeatPrice * 12;
   }, 0);
+
+  const { dispatch, totals } = useContext(Context);
+
+  useEffect(() => {
+    dispatch({
+      type: 'SET_TOTALS',
+      value: {
+        ...totals,
+        ecommerce: {
+          annualyBilledMonthly: annualyBilledMonthly,
+          monthlyBilledMonthly: monthlyBilledMonthly,
+          annualyBilledAnnualy: annualyBilledAnnualy,
+          monthlyBilledAnnualy: monthlyBilledAnnualy,
+        },
+      },
+    });
+  }, [annualyBilledMonthly, monthlyBilledMonthly, annualyBilledAnnualy, monthlyBilledAnnualy]);
 
   return (
     <>

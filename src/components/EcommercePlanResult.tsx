@@ -106,7 +106,6 @@ const Root = styled.div<RootProps>`
 const EcommercePlanResult: React.FC<EcommercePlanResult> = ({ plan, billing, countPlans, setCountPlans }) => {
   const billAnnual = plan?.billedAnnualyPerMonthPerSeatPrice ?? 0;
   const billMonthly = plan?.billedMonthlyPerMonthPerSeatPrice ?? 0;
-  const inputSalesVolume = plan.inputSalesVolume ? plan.inputSalesVolume : 0;
   useEffect(() => {
     setCountPlans({ ...countPlans, [plan.name]: 1 });
   }, []);
@@ -140,7 +139,6 @@ const EcommercePlanResult: React.FC<EcommercePlanResult> = ({ plan, billing, cou
         {billing === 'yearly' && <p>${monthlyBilledAnnualy}/month</p>}
         {billing === 'monthly' && <p>${monthlyBilledMonthly}/month</p>}
       </div>
-      <div>Commission: {plan.transactionFee * inputSalesVolume}</div>
     </Root>
   );
 };

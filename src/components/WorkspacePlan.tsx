@@ -1,10 +1,11 @@
-import { ChangeEventHandler, useEffect, useState } from 'react';
+import { ChangeEventHandler, useContext, useEffect, useState } from 'react';
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
 import styled from 'styled-components';
 import Selection from './Selection';
 import { v4 as uuid } from 'uuid';
 
 import WorkspacePlanResult from './WorkspacePlanResult';
+import { Context } from '../state/store';
 
 interface WForm {
   seats: number;
@@ -284,6 +285,23 @@ function WorkspacePlan() {
 
   const annualyBilledAnnualy = plan.billedAnnualyPerMonthPerSeatPrice * 12 * seats;
   const annualyBilledMonthly = plan.billedMonthlyPerMonthPerSeatPrice * 12 * seats;
+
+  const { dispatch, totals } = useContext(Context);
+
+  useEffect(() => {
+    dispatch({
+      type: 'SET_TOTALS',
+      value: {
+        ...totals,
+        workspace: {
+          annualyBilledMonthly: annualyBilledMonthly === Infinity ? 0 : annualyBilledMonthly,
+          monthlyBilledMonthly: monthlyBilledMonthly === Infinity ? 0 : monthlyBilledMonthly,
+          annualyBilledAnnualy: annualyBilledAnnualy === Infinity ? 0 : annualyBilledAnnualy,
+          monthlyBilledAnnualy: monthlyBilledAnnualy === Infinity ? 0 : monthlyBilledAnnualy,
+        },
+      },
+    });
+  }, [annualyBilledMonthly, monthlyBilledMonthly, annualyBilledAnnualy, monthlyBilledAnnualy]);
 
   return (
     <>

@@ -1,10 +1,11 @@
-import { ChangeEventHandler, ReactEventHandler, useEffect, useState } from 'react';
+import { ChangeEventHandler, ReactEventHandler, useContext, useEffect, useState } from 'react';
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
 import styled from 'styled-components';
 import Selection from './Selection';
 import { v4 as uuid } from 'uuid';
 
 import SitePlanResult from './SitePlanResult';
+import { Context } from '../state/store';
 
 export interface SForm {
   customDomain: boolean;
@@ -278,6 +279,23 @@ function SitePlan() {
       ? prev
       : prev + countPlans[curr.name] * curr.billedMonthlyPerMonthPerSeatPrice * 12;
   }, 0);
+
+  const { dispatch, totals } = useContext(Context);
+
+  useEffect(() => {
+    dispatch({
+      type: 'SET_TOTALS',
+      value: {
+        ...totals,
+        site: {
+          annualyBilledMonthly: annualyBilledMonthly,
+          monthlyBilledMonthly: monthlyBilledMonthly,
+          annualyBilledAnnualy: annualyBilledAnnualy,
+          monthlyBilledAnnualy: monthlyBilledAnnualy,
+        },
+      },
+    });
+  }, [annualyBilledMonthly, monthlyBilledMonthly, annualyBilledAnnualy, monthlyBilledAnnualy]);
 
   return (
     <>
