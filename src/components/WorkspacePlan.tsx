@@ -213,8 +213,8 @@ function WorkspacePlan() {
 
   const formData = watch();
   useEffect(() => {
-    if (formData.seats < 1) setValue('seats', 1);
-    if (formData.unhostedSites < 2) setValue('unhostedSites', 2);
+    if (formData.seats < 0) setValue('seats', 1);
+    if (formData.unhostedSites < 0) setValue('unhostedSites', 2);
     setSeats(formData.seats);
     const newPlan = findPlan(plans, formData);
     if (newPlan.name !== plan.name) {
@@ -327,7 +327,6 @@ function WorkspacePlan() {
           />
 
           <label className="w-checkbox checkbox-field">
-            Custom Code
             <input
               type="checkbox"
               placeholder="Custom Code"

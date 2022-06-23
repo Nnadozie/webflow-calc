@@ -6,21 +6,21 @@ interface ISelection {
 }
 
 const Root = styled.div`
-  border: 1px solid #f44336b8;
-  animation: animate-background linear 0.1s;
+  // border: 1px solid #f44336b8;
+  // animation: animate-background linear 0.1s;
 
-  @keyframes animate-background {
-    from {
-      border: 1px solid #ffffff;
-    }
-    to {
-      border: 1px solid #f44336b8;
-    }
-  }
+  // @keyframes animate-background {
+  //   from {
+  //     border: 1px solid #ffffff;
+  //   }
+  //   to {
+  //     border: 1px solid #f44336b8;
+  //   }
+  // }
 `;
 
 const Selection: React.FC<ISelection> = ({ children }) => {
-  return <Root>{children}</Root>;
+  return <Root className="pre-add-name">{children}</Root>;
 };
 
 export default Selection;
