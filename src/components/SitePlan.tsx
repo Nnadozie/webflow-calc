@@ -302,7 +302,7 @@ function SitePlan() {
       <div className="form-div">
         <form onSubmit={handleSubmit(onSubmit)} onClick={() => setAddedWarning(false)} className="form">
           <h2>Add Site Plan</h2>
-          <label>
+          <label className="w-checkbox checkbox-field">
             <input
               className="w-checkbox-input"
               type="checkbox"
@@ -333,7 +333,7 @@ function SitePlan() {
             className="text-field w-input"
           />
 
-          <label htmlFor="uptimeSla">
+          <label className="w-checkbox checkbox-field">
             <input
               type="checkbox"
               placeholder="Uptime SLA"
