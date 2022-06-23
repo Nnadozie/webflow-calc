@@ -304,91 +304,86 @@ function WorkspacePlan() {
   }, [annualyBilledMonthly, monthlyBilledMonthly, annualyBilledAnnualy, monthlyBilledAnnualy]);
 
   return (
-    <>
-      <Root className="plan-container">
-        <div className="form-div">
-          <form onSubmit={handleSubmit(onSubmit)} className="form">
-            <h2>Add Workspace Plan</h2>
-            <label>Seats</label>
-            <input type="number" placeholder="Seats" defaultValue="1" {...register('seats')} className="text-field" />
+    <Root className="plan-container">
+      <div className="form-div">
+        <form onSubmit={handleSubmit(onSubmit)} className="form">
+          <h2>Add Workspace Plan</h2>
+          <label htmlFor="seats">Seats</label>
+          <input
+            type="number"
+            placeholder="Seats"
+            defaultValue="1"
+            {...register('seats')}
+            className="text-field w-input"
+          />
 
-            <label>Unhosted Sites</label>
-            <input
-              type="number"
-              placeholder="Unhosted Sites"
-              defaultValue="2"
-              {...register('unhostedSites')}
-              className="text-field"
-            />
+          <label>Unhosted Sites</label>
+          <input
+            type="number"
+            placeholder="Unhosted Sites"
+            defaultValue="2"
+            {...register('unhostedSites')}
+            className="text-field"
+          />
 
-            <label>Custom Code</label>
-            <input
-              type="checkbox"
-              placeholder="Custom Code"
-              {...register('customCode', {})}
-              className="checkbox-field"
-            />
+          <label>Custom Code</label>
+          <input type="checkbox" placeholder="Custom Code" {...register('customCode', {})} className="checkbox-field" />
 
-            <label>Code Export</label>
-            <input
-              type="checkbox"
-              placeholder="Code Export"
-              {...register('codeExport', {})}
-              className="checkbox-field"
-            />
+          <label>Code Export</label>
+          <input type="checkbox" placeholder="Code Export" {...register('codeExport', {})} className="checkbox-field" />
 
-            <label>Billing Permissions</label>
-            <input
-              type="checkbox"
-              placeholder="Billing Permissions"
-              {...register('billingPermissions', {})}
-              className="checkbox-field"
-            />
+          <label>Billing Permissions</label>
+          <input
+            type="checkbox"
+            placeholder="Billing Permissions"
+            {...register('billingPermissions', {})}
+            className="checkbox-field"
+          />
 
-            <label>Publishing Permissions</label>
-            <input
-              type="checkbox"
-              placeholder="Publishing Permissions"
-              {...register('publishingPermissions', {})}
-              className="checkbox-field"
-            />
+          <label>Publishing Permissions</label>
+          <input
+            type="checkbox"
+            placeholder="Publishing Permissions"
+            {...register('publishingPermissions', {})}
+            className="checkbox-field"
+          />
 
-            <label>Advanced Permissions</label>
-            <input
-              type="checkbox"
-              placeholder="Advanced Permissions"
-              {...register('advancedPermissions', {})}
-              className="checkbox-field"
-            />
+          <label>Advanced Permissions</label>
+          <input
+            type="checkbox"
+            placeholder="Advanced Permissions"
+            {...register('advancedPermissions', {})}
+            className="checkbox-field"
+          />
 
-            <label>Advanced Security</label>
-            <input
-              type="checkbox"
-              placeholder="Advanced Security"
-              {...register('advancedSecurity', {})}
-              className="checkbox-field"
-            />
+          <label>Advanced Security</label>
+          <input
+            type="checkbox"
+            placeholder="Advanced Security"
+            {...register('advancedSecurity', {})}
+            className="checkbox-field"
+          />
 
-            {/* <Selection key={uuid()}>
+          {/* <Selection key={uuid()}>
             <h2>{plan?.name} Workspace Plan</h2>
           </Selection> */}
-            {/* <button type="submit">Add Plan</button>
+          {/* <button type="submit">Add Plan</button>
           {addedWarning && <h3>You already added one {plan.name?.toLocaleLowerCase()} site. Increment to add more.</h3>} */}
-          </form>
-        </div>
-        <div className="plan-output">
-          <SelectedPlans className="selected-plans">
-            <div className="choose-pricing">
-              <label className="label-standin">
-                <select value={billing} onChange={onSelect} className="select-standin">
-                  <option selected value="yearly">
-                    Billed yearly
-                  </option>
-                  <option value="monthly">Billed monthly</option>
-                </select>
-              </label>
-            </div>
-            {/* {plans.map((plan) => {
+        </form>
+      </div>
+      <div className="plan-output">
+        <SelectedPlans className="selected-plans">
+          <div className="choose-pricing">
+            <label className="label-standin">
+              <select value={billing} onChange={onSelect} className="select-standin w-button">
+                <option selected value="yearly">
+                  Billed yearly
+                </option>
+                <option value="monthly">Billed monthly</option>
+              </select>
+            </label>
+          </div>
+          {/* {plans.map((plan) => {
               return countPlans[plan.name] > 0 ? (
                 <WorkspacePlanResult
                   plan={plans.find((val) => val.name === plan.name) as WPlan}
@@ -398,34 +393,33 @@ function WorkspacePlan() {
                 ></WorkspacePlanResult>
               ) : null;
             })} */}
-            {<WorkspacePlanResult plan={plan} billing={billing} seats={seats}></WorkspacePlanResult>}
-          </SelectedPlans>
-          <Total className="total">
-            <div className="total-label">
-              <h2 className="total-text">Total</h2>
-            </div>
-            {plan.name === 'Enterprise' ? (
-              <div className="price">Custom Pricing</div>
-            ) : (
-              <>
-                {billing === 'monthly' && (
-                  <>
-                    <div className="price">${annualyBilledMonthly}/year</div>
-                    <div className="price">${monthlyBilledMonthly}/month</div>
-                  </>
-                )}
-                {billing === 'yearly' && (
-                  <>
-                    <div className="price">${annualyBilledAnnualy}/year</div>
-                    <div className="price">${monthlyBilledAnnualy}/month</div>
-                  </>
-                )}
-              </>
-            )}
-          </Total>
-        </div>
-      </Root>
-    </>
+          {<WorkspacePlanResult plan={plan} billing={billing} seats={seats}></WorkspacePlanResult>}
+        </SelectedPlans>
+        <Total className="total">
+          <div className="total-label">
+            <h2 className="total-text">Total</h2>
+          </div>
+          {plan.name === 'Enterprise' ? (
+            <div className="price">Custom Pricing</div>
+          ) : (
+            <>
+              {billing === 'monthly' && (
+                <>
+                  <div className="price">${annualyBilledMonthly}/year</div>
+                  <div className="price">${monthlyBilledMonthly}/month</div>
+                </>
+              )}
+              {billing === 'yearly' && (
+                <>
+                  <div className="price">${annualyBilledAnnualy}/year</div>
+                  <div className="price">${monthlyBilledAnnualy}/month</div>
+                </>
+              )}
+            </>
+          )}
+        </Total>
+      </div>
+    </Root>
   );
 }
 

@@ -7,14 +7,12 @@ import SumTotal from './components/SumTotal';
 
 function App() {
   return (
-    <div className="App">
-      <Store>
-        <WorkspacePlan />
-        <SitePlan />
-        <EcommercePlan />
-        <SumTotal></SumTotal>
-      </Store>
-    </div>
+    <Store>
+      <WorkspacePlan />
+      <SitePlan />
+      <EcommercePlan />
+      <SumTotal></SumTotal>
+    </Store>
   );
 }
 
