@@ -1,8 +1,11 @@
-import { useEffect, useState } from 'react';
+import { ChangeEventHandler, ReactEventHandler, useContext, useEffect, useState } from 'react';
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
 import styled from 'styled-components';
+import Selection from './Selection';
+import { v4 as uuid } from 'uuid';
 
 import SitePlanResult from './SitePlanResult';
+import { Context } from '../state/store';
 
 export interface SForm {
   customDomain: boolean;
@@ -13,9 +16,9 @@ export interface SForm {
 }
 
 export interface SPlan extends SForm {
-  name?: string;
-  billedMonthlyPerMonthPerSeatPrice?: number;
-  billedAnnualyPerMonthPerSeatPrice?: number;
+  name: 'Starter' | 'Basic' | 'CMS' | 'Business' | 'Enterprise';
+  billedMonthlyPerMonthPerSeatPrice: number;
+  billedAnnualyPerMonthPerSeatPrice: number;
 }
 
 const plans: SPlan[] = [
@@ -78,18 +81,19 @@ const Root = styled.div`
   display: flex;
   flex-wrap: wrap;
   padding: 40px;
-  height: 540px;
 
   form {
-    width: 300px;
+    min-width: 550px;
+    max-width: 550px;
+    width: 550px;
     text-align: start;
     padding: 30px 40px 30px;
     border: 1px solid;
-    border-radius: 10px;
-
     button {
       padding: 10px;
     }
+    display: flex;
+    flex-direction: column;
   }
 
   label {
@@ -106,28 +110,82 @@ const Root = styled.div`
 
   input[type='number'],
   select {
-    max-width: 300px;
-    width: 250px;
+    width: 100%;
+    box-sizing: border-box;
     padding-left: 30px;
-    display: ;
+    padding-right: 30px;
+  }
+
+  button {
+    margin-top: 10px;
   }
 `;
 
 const SelectedPlans = styled.div`
   display: flex;
   flex-wrap: wrap;
+  flex-direction: column;
   h2 {
     min-width: 100%;
     margin: 0px 40px;
   }
   border: 1px solid;
   min-height: 370px;
+  padding: 40px;
+
+  .choose-pricing {
+    margin-left: auto;
+    display: flex;
+  }
+
+  max-width: 550px;
+  width: 550px;
 `;
+
+const Total = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+
+  border: 1px solid;
+  padding: 40px;
+
+  max-width: 550px;
+  width: 550px;
+
+  .center {
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  h2 {
+    margin-bottom: 5px;
+  }
+  .label {
+    width: 230px;
+  }
+`;
+
+export interface IPlanState {
+  Starter: number;
+  Basic: number;
+  CMS: number;
+  Business: number;
+  Enterprise: number;
+}
 
 function SitePlan() {
   const [plan, setPlan] = useState<SPlan>(plans[0]);
-  const [addedPlans, setAddedPlans] = useState<SPlan[]>([]);
+  const [countPlans, setCountPlans] = useState<IPlanState>({
+    Starter: 0,
+    Basic: 0,
+    CMS: 0,
+    Business: 0,
+    Enterprise: 0,
+  });
   const [addedWarning, setAddedWarning] = useState<boolean>(false);
+  const [billing, setBilling] = useState<'yearly' | 'monthly'>('yearly');
   const {
     register,
     handleSubmit,
@@ -145,8 +203,8 @@ function SitePlan() {
   });
 
   const onSubmit: SubmitHandler<FieldValues> = () => {
-    if (!addedPlans.find((addedPlan) => plan.name === addedPlan.name)) {
-      setAddedPlans([...addedPlans, plan]);
+    if (countPlans[plan.name] <= 0) {
+      setCountPlans({ ...countPlans, [plan.name]: countPlans[plan.name] + 1 });
     } else {
       setAddedWarning(true);
     }
@@ -200,9 +258,44 @@ function SitePlan() {
     return resPlan;
   }
 
-  const [totalS, setTotalS] = useState({});
+  const onSelect: ChangeEventHandler<HTMLSelectElement> = (e) => {
+    setBilling(e.target.value as 'monthly' | 'yearly');
+  };
 
-  const onSiteChange = (a: number, b: number, c: number, d: number) => {};
+  const monthlyBilledMonthly = plans.reduce((prev, curr) => {
+    return curr.name === 'Enterprise' ? prev : prev + countPlans[curr.name] * curr.billedMonthlyPerMonthPerSeatPrice;
+  }, 0);
+  const monthlyBilledAnnualy = plans.reduce((prev, curr) => {
+    return curr.name === 'Enterprise' ? prev : prev + countPlans[curr.name] * curr.billedAnnualyPerMonthPerSeatPrice;
+  }, 0);
+
+  const annualyBilledAnnualy = plans.reduce((prev, curr) => {
+    return curr.name === 'Enterprise'
+      ? prev
+      : prev + countPlans[curr.name] * curr.billedAnnualyPerMonthPerSeatPrice * 12;
+  }, 0);
+  const annualyBilledMonthly = plans.reduce((prev, curr) => {
+    return curr.name === 'Enterprise'
+      ? prev
+      : prev + countPlans[curr.name] * curr.billedMonthlyPerMonthPerSeatPrice * 12;
+  }, 0);
+
+  const { dispatch, totals } = useContext(Context);
+
+  useEffect(() => {
+    dispatch({
+      type: 'SET_TOTALS',
+      value: {
+        ...totals,
+        site: {
+          annualyBilledMonthly: annualyBilledMonthly,
+          monthlyBilledMonthly: monthlyBilledMonthly,
+          annualyBilledAnnualy: annualyBilledAnnualy,
+          monthlyBilledAnnualy: monthlyBilledAnnualy,
+        },
+      },
+    });
+  }, [annualyBilledMonthly, monthlyBilledMonthly, annualyBilledAnnualy, monthlyBilledAnnualy]);
 
   return (
     <>
@@ -231,18 +324,58 @@ function SitePlan() {
             Uptime SLA
             <input type="checkbox" placeholder="Uptime SLA" {...register('uptimeSla', {})} />
           </label>
-          <button type="submit">Add Site Plan</button>
-          {addedWarning && <h3>You already added one {plan.name} site plan</h3>}
+          <label></label>
+          <Selection key={uuid()}>
+            <h2>{plan?.name} Site Plan</h2>
+          </Selection>
+
+          <button type="submit">Add Plan</button>
+          {addedWarning && <h3>You already added one {plan.name?.toLocaleLowerCase()} site. Increment to add more.</h3>}
         </form>
 
-        <SitePlanResult plan={plan} animate showCount={false}></SitePlanResult>
+        <div>
+          <SelectedPlans>
+            <div className="choose-pricing">
+              <label>
+                <select value={billing} onChange={onSelect}>
+                  <option selected value="yearly">
+                    Billed yearly
+                  </option>
+                  <option value="monthly">Billed monthly</option>
+                </select>
+              </label>
+            </div>
+            {plans.map((plan) => {
+              return countPlans[plan.name] > 0 ? (
+                <SitePlanResult
+                  plan={plans.find((val) => val.name === plan.name) as SPlan}
+                  billing={billing}
+                  countPlans={countPlans}
+                  setCountPlans={setCountPlans}
+                ></SitePlanResult>
+              ) : null;
+            })}
+          </SelectedPlans>
+          <Total>
+            <div className="label">
+              <h2>Total</h2>
+              <sub>Excludes enterprise sites</sub>
+            </div>
+            {billing === 'monthly' && (
+              <>
+                <div className="center">${annualyBilledMonthly}/year</div>
+                <div className="center">${monthlyBilledMonthly}/month</div>
+              </>
+            )}
+            {billing === 'yearly' && (
+              <>
+                <div className="center">${annualyBilledAnnualy}/year</div>
+                <div className="center">${monthlyBilledAnnualy}/month</div>
+              </>
+            )}
+          </Total>
+        </div>
       </Root>
-      <SelectedPlans>
-        <h2>Added Site Plans</h2>
-        {addedPlans.map((plan) => (
-          <SitePlanResult key={plan.name} plan={plan} controls></SitePlanResult>
-        ))}
-      </SelectedPlans>
     </>
   );
 }
