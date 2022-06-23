@@ -3,40 +3,40 @@ import styled from 'styled-components';
 import { Context } from '../state/store';
 
 const Total = styled.div`
-  .choose-pricing {
-    width: 100%;
-    display: flex;
-    label {
-      margin-left: auto;
-    }
-  }
-  display: flex;
-  flex-wrap: wrap;
-  flex-direction: row;
+  // .choose-pricing {
+  //   width: 100%;
+  //   display: flex;
+  //   label {
+  //     margin-left: auto;
+  //   }
+  // }
+  // display: flex;
+  // flex-wrap: wrap;
+  // flex-direction: row;
 
-  border: 1px solid;
-  padding: 40px;
+  // border: 1px solid;
+  // padding: 40px;
 
-  max-width: 550px;
-  width: 550px;
+  // max-width: 550px;
+  // width: 550px;
 
-  .center {
-    padding: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  h2 {
-    margin-bottom: 5px;
-  }
-  .label {
-    width: 230px;
-  }
-  margin-left: auto;
-  position: fixed;
-  bottom: 0px;
-  right: 0px;
-  background: yellow;
+  // .center {
+  //   padding: 10px;
+  //   display: flex;
+  //   align-items: center;
+  //   justify-content: center;
+  // }
+  // h2 {
+  //   margin-bottom: 5px;
+  // }
+  // .label {
+  //   width: 230px;
+  // }
+  // margin-left: auto;
+  // position: fixed;
+  // bottom: 0px;
+  // right: 0px;
+  // background: yellow;
 `;
 
 function SumTotal() {
@@ -61,33 +61,36 @@ function SumTotal() {
   }
 
   return (
-    <Total>
-      <div className="choose-pricing">
-        <label>
-          <select value={billing} onChange={onSelect}>
-            <option selected value="yearly">
-              Billed yearly
-            </option>
-            <option value="monthly">Billed monthly</option>
-          </select>
-        </label>
+    <Total className="plan-container">
+      <div className="space-filler"></div>
+      <div className="sum-total">
+        <div className="sum-choose-pricing">
+          <label className="sum-label-standin">
+            <select className="sum-select-standin" value={billing} onChange={onSelect}>
+              <option selected value="yearly">
+                Billed yearly
+              </option>
+              <option value="monthly">Billed monthly</option>
+            </select>
+          </label>
+        </div>
+        <div className="total-label">
+          <p className="total-text">Sum Total</p>
+          <p className="total-sub-text">Excludes all enterprise plans</p>
+        </div>
+        {billing === 'monthly' && (
+          <>
+            <div className="price">${annualyBilledMonthly}/year</div>
+            <div className="price">${monthlyBilledMonthly}/month</div>
+          </>
+        )}
+        {billing === 'yearly' && (
+          <>
+            <div className="price">${annualyBilledAnnualy}/year</div>
+            <div className="price">${monthlyBilledAnnualy}/month</div>
+          </>
+        )}
       </div>
-      <div className="label">
-        <h2>Sum Total</h2>
-        <sub>Excludes all enterprise plans</sub>
-      </div>
-      {billing === 'monthly' && (
-        <>
-          <div className="center">${annualyBilledMonthly}/year</div>
-          <div className="center">${monthlyBilledMonthly}/month</div>
-        </>
-      )}
-      {billing === 'yearly' && (
-        <>
-          <div className="center">${annualyBilledAnnualy}/year</div>
-          <div className="center">${monthlyBilledAnnualy}/month</div>
-        </>
-      )}
     </Total>
   );
 }
