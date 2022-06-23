@@ -76,31 +76,31 @@ interface RootProps {
   animate?: boolean;
 }
 const Root = styled.div<RootProps>`
-  margin-bottom: 10px;
-  padding: 10px;
-  border: 1px solid #000000;
-  h3 {
-    margin-bottom: 5px;
-  }
-  display: flex;
-  flex-direction: row;
+  // margin-bottom: 10px;
+  // padding: 10px;
+  // border: 1px solid #000000;
+  // h3 {
+  //   margin-bottom: 5px;
+  // }
+  // display: flex;
+  // flex-direction: row;
 
-  .price {
-    padding: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+  // .price {
+  //   padding: 10px;
+  //   display: flex;
+  //   align-items: center;
+  //   justify-content: center;
+  // }
 
-  .plan-name {
-    max-width: 230px;
-    width: 230px;
-  }
+  // .plan-name {
+  //   max-width: 230px;
+  //   width: 230px;
+  // }
 
-  button {
-    margin-right: 10px;
-    width: 85px;
-  }
+  // button {
+  //   margin-right: 10px;
+  //   width: 85px;
+  // }
 `;
 
 const EcommercePlanResult: React.FC<EcommercePlanResult> = ({ plan, billing, countPlans, setCountPlans }) => {
@@ -117,16 +117,22 @@ const EcommercePlanResult: React.FC<EcommercePlanResult> = ({ plan, billing, cou
   const annualyBilledMonthly = billMonthly * 12 * sites;
 
   return (
-    <Root>
-      <div className="plan-name">
-        <h3>
+    <Root className="plan-card">
+      <div className="plan-quantity">
+        <h3 className="plan-name">
           {plan?.name} Ecommerce Site {`x ${sites}`}
         </h3>
-        <div>
-          <button onClick={() => setCountPlans({ ...countPlans, [plan.name]: countPlans[plan.name] - 1 })}>
+        <div className="plan-quantity-button">
+          <button
+            className="Decrement w-button"
+            onClick={() => setCountPlans({ ...countPlans, [plan.name]: countPlans[plan.name] - 1 })}
+          >
             {countPlans[plan.name] === 1 ? 'Remove' : 'Decrement'}
           </button>
-          <button onClick={() => setCountPlans({ ...countPlans, [plan.name]: countPlans[plan.name] + 1 })}>
+          <button
+            className="Increment w-button"
+            onClick={() => setCountPlans({ ...countPlans, [plan.name]: countPlans[plan.name] + 1 })}
+          >
             Increment
           </button>
         </div>

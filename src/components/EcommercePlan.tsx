@@ -65,93 +65,93 @@ const plans: EPlan[] = [
 ];
 
 const Root = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  padding: 40px;
+  // display: flex;
+  // flex-wrap: wrap;
+  // padding: 40px;
 
-  form {
-    min-width: 550px;
-    max-width: 550px;
-    width: 550px;
-    text-align: start;
-    padding: 30px 40px 30px;
-    border: 1px solid;
-    button {
-      padding: 10px;
-    }
-    display: flex;
-    flex-direction: column;
-  }
+  // form {
+  //   min-width: 550px;
+  //   max-width: 550px;
+  //   width: 550px;
+  //   text-align: start;
+  //   padding: 30px 40px 30px;
+  //   border: 1px solid;
+  //   button {
+  //     padding: 10px;
+  //   }
+  //   display: flex;
+  //   flex-direction: column;
+  // }
 
-  label {
-    display: block;
-  }
+  // label {
+  //   display: block;
+  // }
 
-  input,
-  select {
-    display: block;
-    margin-top: 3px;
-    margin-bottom: 3px;
-    height: 30px;
-  }
+  // input,
+  // select {
+  //   display: block;
+  //   margin-top: 3px;
+  //   margin-bottom: 3px;
+  //   height: 30px;
+  // }
 
-  input[type='number'],
-  select {
-    width: 100%;
-    box-sizing: border-box;
-    padding-left: 30px;
-    padding-right: 30px;
-  }
+  // input[type='number'],
+  // select {
+  //   width: 100%;
+  //   box-sizing: border-box;
+  //   padding-left: 30px;
+  //   padding-right: 30px;
+  // }
 
-  button {
-    margin-top: 10px;
-  }
+  // button {
+  //   margin-top: 10px;
+  // }
 `;
 
 const SelectedPlans = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  flex-direction: column;
-  h2 {
-    min-width: 100%;
-    margin: 0px 40px;
-  }
-  border: 1px solid;
-  min-height: 370px;
-  padding: 40px;
+  // display: flex;
+  // flex-wrap: wrap;
+  // flex-direction: column;
+  // h2 {
+  //   min-width: 100%;
+  //   margin: 0px 40px;
+  // }
+  // border: 1px solid;
+  // min-height: 370px;
+  // padding: 40px;
 
-  .choose-pricing {
-    margin-left: auto;
-    display: flex;
-  }
+  // .choose-pricing {
+  //   margin-left: auto;
+  //   display: flex;
+  // }
 
-  max-width: 550px;
-  width: 550px;
+  // max-width: 550px;
+  // width: 550px;
 `;
 
 const Total = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  flex-direction: row;
+  // display: flex;
+  // flex-wrap: wrap;
+  // flex-direction: row;
 
-  border: 1px solid;
-  padding: 40px;
+  // border: 1px solid;
+  // padding: 40px;
 
-  max-width: 550px;
-  width: 550px;
+  // max-width: 550px;
+  // width: 550px;
 
-  .center {
-    padding: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  h2 {
-    margin-bottom: 5px;
-  }
-  .label {
-    width: 230px;
-  }
+  // .center {
+  //   padding: 10px;
+  //   display: flex;
+  //   align-items: center;
+  //   justify-content: center;
+  // }
+  // h2 {
+  //   margin-bottom: 5px;
+  // }
+  // .label {
+  //   width: 230px;
+  // }
 `;
 
 export interface IPlanState {
@@ -287,91 +287,107 @@ function EcommercePlan() {
   }, [annualyBilledMonthly, monthlyBilledMonthly, annualyBilledAnnualy, monthlyBilledAnnualy]);
 
   return (
-    <>
-      <Root>
-        <form onSubmit={handleSubmit(onSubmit)}>
+    <Root className="plan-container">
+      <div className="form-div">
+        <form onSubmit={handleSubmit(onSubmit)} className="form">
           <h2>Add Ecommerce Plan</h2>
-          <label>
-            Custom Domain
-            <input type="checkbox" placeholder="Custom Domain" defaultValue="1" {...register('customDomain')} />
+          <label className="w-checkbox checkbox-field">
+            <input
+              className="w-checkbox-input"
+              type="checkbox"
+              placeholder="Custom Domain"
+              defaultValue="1"
+              {...register('customDomain')}
+            />
+            <span className="w-form-label">Custom Domain</span>
           </label>
 
-          <label>
-            CMS Items
-            <input type="number" placeholder="CMS Items" defaultValue="2" {...register('cmsItems')} />
-          </label>
+          <label htmlFor="cmsItems">CMS Items</label>
+          <input
+            className="text-field w-input"
+            type="number"
+            placeholder="CMS Items"
+            defaultValue="2"
+            {...register('cmsItems')}
+          />
 
-          <label>
-            Bandwidth (GB)
-            <input type="number" placeholder="Bandwidth" {...register('bandwidth', {})} />
-          </label>
-          <label>
-            Guest Editors
-            <input type="number" placeholder="Guest Editors" {...register('guestEditors', {})} />
-          </label>
+          <label htmlFor="bandwidth">Bandwidth (GB)</label>
+          <input className="text-field w-input" type="number" placeholder="Bandwidth" {...register('bandwidth', {})} />
 
-          <label>
-            Transaction Fee (%)
-            <select {...register('transactionFee')}>
-              <option value="0">0</option>
-              <option value="2">2</option>
-            </select>
-          </label>
-          <label>
-            Annual Sales Volume ($)
-            <input type="number" placeholder="Annual Sales Volume" {...register('annualSalesVolume', {})} />
-          </label>
+          <label htmlFor="guestEditors">Guest Editors</label>
+          <input
+            className="text-field w-input"
+            type="number"
+            placeholder="Guest Editors"
+            {...register('guestEditors', {})}
+          />
+
+          <label htmlFor="transactionFee">Transaction Fee (%)</label>
+          <select className="text-field w-select" {...register('transactionFee')}>
+            <option value="0">0</option>
+            <option value="2">2</option>
+          </select>
+
+          <label htmlFor="annualSalesVolume">Annual Sales Volume ($) </label>
+          <input
+            className="text-field w-input"
+            type="number"
+            placeholder="Annual Sales Volume"
+            {...register('annualSalesVolume', {})}
+          />
+
           <Selection key={uuid()}>
-            <h2>{plan?.name} Ecommerce Plan</h2>
+            <h2 className="pre-add-name-text">{plan?.name} Ecommerce Plan</h2>
           </Selection>
 
-          <button type="submit">Add Plan</button>
+          <button className="submit-button w-button" type="submit">
+            Add Plan
+          </button>
           {addedWarning && <h3>You already added one {plan.name?.toLocaleLowerCase()} site. Increment to add more.</h3>}
         </form>
-
-        <div>
-          <SelectedPlans>
-            <div className="choose-pricing">
-              <label>
-                <select value={billing} onChange={onSelect}>
-                  <option selected value="yearly">
-                    Billed yearly
-                  </option>
-                  <option value="monthly">Billed monthly</option>
-                </select>
-              </label>
-            </div>
-            {plans.map((plan) => {
-              return countPlans[plan.name] > 0 ? (
-                <EcommercePlanResult
-                  plan={plans.find((val) => val.name === plan.name) as EPlan}
-                  billing={billing}
-                  countPlans={countPlans}
-                  setCountPlans={setCountPlans}
-                ></EcommercePlanResult>
-              ) : null;
-            })}
-          </SelectedPlans>
-          <Total>
-            <div className="label">
-              <h2>Total</h2>
-            </div>
-            {billing === 'monthly' && (
-              <>
-                <div className="center">${annualyBilledMonthly}/year</div>
-                <div className="center">${monthlyBilledMonthly}/month</div>
-              </>
-            )}
-            {billing === 'yearly' && (
-              <>
-                <div className="center">${annualyBilledAnnualy}/year</div>
-                <div className="center">${monthlyBilledAnnualy}/month</div>
-              </>
-            )}
-          </Total>
-        </div>
-      </Root>
-    </>
+      </div>
+      <div className="plan-output">
+        <SelectedPlans className="selected-plans">
+          <div className="choose-pricing">
+            <label className="label-standin">
+              <select value={billing} onChange={onSelect} className="select-standin w-button">
+                <option selected value="yearly">
+                  Billed yearly
+                </option>
+                <option value="monthly">Billed monthly</option>
+              </select>
+            </label>
+          </div>
+          {plans.map((plan) => {
+            return countPlans[plan.name] > 0 ? (
+              <EcommercePlanResult
+                plan={plans.find((val) => val.name === plan.name) as EPlan}
+                billing={billing}
+                countPlans={countPlans}
+                setCountPlans={setCountPlans}
+              ></EcommercePlanResult>
+            ) : null;
+          })}
+        </SelectedPlans>
+        <Total className="total">
+          <div className="total-label">
+            <h2 className="total-text">Total</h2>
+          </div>
+          {billing === 'monthly' && (
+            <>
+              <div className="price">${annualyBilledMonthly}/year</div>
+              <div className="price">${monthlyBilledMonthly}/month</div>
+            </>
+          )}
+          {billing === 'yearly' && (
+            <>
+              <div className="price">${annualyBilledAnnualy}/year</div>
+              <div className="price">${monthlyBilledAnnualy}/month</div>
+            </>
+          )}
+        </Total>
+      </div>
+    </Root>
   );
 }
 
