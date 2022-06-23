@@ -66,7 +66,7 @@ function SumTotal() {
       <div className="sum-total">
         <div className="sum-choose-pricing">
           <label className="sum-label-standin">
-            <select className="sum-select-standin" value={billing} onChange={onSelect}>
+            <select className="sum-select-standin w-button" value={billing} onChange={onSelect}>
               <option selected value="yearly">
                 Billed yearly
               </option>
