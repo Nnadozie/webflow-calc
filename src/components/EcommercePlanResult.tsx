@@ -122,15 +122,15 @@ const EcommercePlanResult: React.FC<EcommercePlanResult> = ({ plan, billing, cou
         <h3 className="plan-name">
           {plan?.name} Ecommerce Site {`x ${sites}`}
         </h3>
-        <div className="plan-quantity-button">
+        <div className="plan-quantity-buttons">
           <button
-            className="Decrement w-button"
+            className="decrement w-button"
             onClick={() => setCountPlans({ ...countPlans, [plan.name]: countPlans[plan.name] - 1 })}
           >
             {countPlans[plan.name] === 1 ? 'Remove' : 'Decrement'}
           </button>
           <button
-            className="Increment w-button"
+            className="increment w-button"
             onClick={() => setCountPlans({ ...countPlans, [plan.name]: countPlans[plan.name] + 1 })}
           >
             Increment
