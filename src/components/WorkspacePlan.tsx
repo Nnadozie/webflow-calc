@@ -317,52 +317,74 @@ function WorkspacePlan() {
             className="text-field w-input"
           />
 
-          <label>Unhosted Sites</label>
+          <label htmlFor="unhostedSites">Unhosted Sites</label>
           <input
             type="number"
             placeholder="Unhosted Sites"
             defaultValue="2"
             {...register('unhostedSites')}
-            className="text-field"
+            className="text-field w-input"
           />
 
-          <label>Custom Code</label>
-          <input type="checkbox" placeholder="Custom Code" {...register('customCode', {})} className="checkbox-field" />
+          <label className="w-checkbox checkbox-field">
+            Custom Code
+            <input
+              type="checkbox"
+              placeholder="Custom Code"
+              {...register('customCode', {})}
+              className="w-checkbox-input"
+            />
+            <span className="w-form-label">Custom Code</span>
+          </label>
 
-          <label>Code Export</label>
-          <input type="checkbox" placeholder="Code Export" {...register('codeExport', {})} className="checkbox-field" />
+          <label className="w-checkbox checkbox-field">
+            <input
+              type="checkbox"
+              placeholder="Code Export"
+              {...register('codeExport', {})}
+              className="w-checkbox-input"
+            />
+            <span className="w-form-label">Code Export</span>
+          </label>
 
-          <label>Billing Permissions</label>
-          <input
-            type="checkbox"
-            placeholder="Billing Permissions"
-            {...register('billingPermissions', {})}
-            className="checkbox-field"
-          />
+          <label className="w-checkbox checkbox-field">
+            <input
+              type="checkbox"
+              placeholder="Billing Permissions"
+              {...register('billingPermissions', {})}
+              className="w-checkbox-input"
+            />
+            <span className="w-form-label">Billing Permissions</span>
+          </label>
 
-          <label>Publishing Permissions</label>
-          <input
-            type="checkbox"
-            placeholder="Publishing Permissions"
-            {...register('publishingPermissions', {})}
-            className="checkbox-field"
-          />
+          <label className="w-checkbox checkbox-field">
+            <input
+              type="checkbox"
+              placeholder="Publishing Permissions"
+              {...register('publishingPermissions', {})}
+              className="w-checkbox-input"
+            />
+            <span className="w-form-label">Publishing Permissions</span>
+          </label>
 
-          <label>Advanced Permissions</label>
-          <input
-            type="checkbox"
-            placeholder="Advanced Permissions"
-            {...register('advancedPermissions', {})}
-            className="checkbox-field"
-          />
-
-          <label>Advanced Security</label>
-          <input
-            type="checkbox"
-            placeholder="Advanced Security"
-            {...register('advancedSecurity', {})}
-            className="checkbox-field"
-          />
+          <label className="w-checkbox checkbox-field">
+            <input
+              type="checkbox"
+              placeholder="Advanced Permissions"
+              {...register('advancedPermissions', {})}
+              className="w-checkbox-input"
+            />
+            <span className="w-form-label">Advanced Permissions</span>
+          </label>
+          <label className="w-checkbox checkbox-field">
+            <input
+              type="checkbox"
+              placeholder="Advanced Security"
+              {...register('advancedSecurity', {})}
+              className="w-checkbox-input"
+            />
+            <span className="w-form-label">Advanced Security</span>
+          </label>
 
           {/* <Selection key={uuid()}>
             <h2>{plan?.name} Workspace Plan</h2>
