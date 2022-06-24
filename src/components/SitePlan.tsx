@@ -379,8 +379,8 @@ function SitePlan() {
         </SelectedPlans>
         <Total className="total">
           <div className="total-label">
-            <h2 className="total-text">Total</h2>
-            <sub>Excludes enterprise sites</sub>
+            <p className="total-text">Total</p>
+            <p>Excludes enterprise sites</p>
           </div>
           {billing === 'monthly' && (
             <>
