@@ -418,7 +418,7 @@ function WorkspacePlan() {
         </SelectedPlans>
         <Total className="total">
           <div className="total-label">
-            <h2 className="total-text">Total</h2>
+            <p className="total-text">Total</p>
           </div>
           {plan.name === 'Enterprise' ? (
             <div className="price">Custom Pricing</div>
